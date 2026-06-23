@@ -1,0 +1,2997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTPC FGUTPP – Store & Material Inspection System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:#f0f4f8; --surface:#fff; --card:#fff;
+  --border:#dde3ec; --border2:#c5cfe0;
+  --ntpc-blue:#003b7a; --ntpc-dark:#001f45; --ntpc-mid:#0056b3;
+  --gold:#c8920a; --gold-lt:#f5c842;
+  --green:#1a7a3a; --green-bg:#e8f5ed;
+  --red:#b91c1c; --red-bg:#fee2e2;
+  --amber:#b45309; --amber-bg:#fef3c7;
+  --sky:#0369a1; --sky-bg:#e0f2fe;
+  --text:#1e293b; --text-mid:#475569; --text-mute:#94a3b8;
+  --shadow:0 2px 12px rgba(0,59,122,0.10);
+  --shadow-lg:0 8px 32px rgba(0,59,122,0.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+header{background:linear-gradient(135deg,var(--ntpc-dark) 0%,var(--ntpc-blue) 60%,#004f9e 100%);color:#fff;box-shadow:0 4px 24px rgba(0,0,0,.28);position:sticky;top:0;z-index:200;}
+.header-main{display:flex;align-items:center;gap:18px;padding:14px 28px;border-bottom:3px solid var(--gold);}
+.logo-ring{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#fff,#e8f0ff);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 4px rgba(200,146,10,.25),0 4px 16px rgba(0,0,0,.3);}
+.logo-ring span{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:var(--ntpc-dark);text-align:center;line-height:1.1;}
+.header-text{flex:1;}
+.header-text .company{font-size:11px;font-weight:600;letter-spacing:1.5px;color:rgba(255,255,255,.65);text-transform:uppercase;margin-bottom:1px;}
+.header-text h1{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;letter-spacing:.5px;line-height:1;color:#fff;}
+.header-text .subtitle{font-size:12px;color:var(--gold-lt);margin-top:3px;font-weight:500;}
+.header-text .address{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;}
+.header-clock{text-align:right;flex-shrink:0;}
+.clock-time{font-family:'Roboto Mono',monospace;font-size:24px;font-weight:500;color:var(--gold-lt);line-height:1;}
+.clock-date{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px;}
+
+.main-tabs{display:flex;background:rgba(0,0,0,.22);padding:0 28px;gap:8px;}
+.main-tab{padding:12px 24px;background:none;border:none;color:rgba(255,255,255,.7);font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;text-transform:uppercase;}
+.main-tab:hover{color:#fff;background:rgba(255,255,255,.08);}
+.main-tab.active{color:var(--gold-lt);border-bottom-color:var(--gold-lt);background:rgba(255,255,255,.08);}
+
+.main{padding:24px 28px;max-width:1400px;margin:0 auto;}
+.module-page{display:none;}
+.module-page.active{display:block;animation:fadeUp .3s ease;}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--border);background:linear-gradient(90deg,rgba(0,59,122,.04),transparent);flex-wrap:wrap;gap:10px;}
+.card-head h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--ntpc-blue);letter-spacing:.3px;display:flex;align-items:center;gap:8px;}
+.card-head h2::before{content:'';display:block;width:4px;height:20px;border-radius:2px;background:var(--gold);}
+
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;box-shadow:var(--shadow);border-left:4px solid var(--ntpc-blue);transition:transform .2s,box-shadow .2s;}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
+.stat.gold{border-left-color:var(--gold);}
+.stat.green{border-left-color:var(--green);}
+.stat.red{border-left-color:var(--red);}
+.stat.sky{border-left-color:var(--sky);}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:800;line-height:1;color:var(--ntpc-blue);}
+.stat.gold .stat-val{color:var(--gold);}
+.stat.green .stat-val{color:var(--green);}
+.stat.red .stat-val{color:var(--red);}
+.stat-label{font-size:11px;font-weight:600;color:var(--text-mute);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+
+.form-body{padding:22px;}
+.form-section-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--ntpc-mid);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-mid);}
+.fg label span.req{color:var(--red);}
+.fg input,.fg select,.fg textarea{background:#f8fafc;border:1.5px solid var(--border2);border-radius:7px;padding:9px 12px;font-family:'Barlow',sans-serif;font-size:15px;outline:none;transition:.2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--ntpc-mid);background:#fff;box-shadow:0 0 0 3px rgba(0,86,179,.1);}
+.fg.full{grid-column:1/-1;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);}
+.btn{padding:10px 22px;border-radius:7px;font-weight:700;cursor:pointer;transition:.2s;border:none;font-family:'Barlow',sans-serif;font-size:14px;}
+.btn-primary{background:linear-gradient(135deg,var(--ntpc-blue),var(--ntpc-mid));color:#fff;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,59,122,.4);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#e0a80d);color:#fff;}
+.btn-outline{background:#fff;border:1.5px solid var(--border2);color:var(--text-mid);}
+.btn-outline:hover{border-color:var(--ntpc-mid);color:var(--ntpc-mid);}
+.btn-danger{background:var(--red-bg);border:1.5px solid rgba(185,28,28,.25);color:var(--red);}
+.btn-danger:hover{background:#fecaca;}
+.btn-sm{padding:6px 13px;font-size:13px;}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.search-inp{background:#f8fafc;border:1.5px solid var(--border2);border-radius:7px;padding:8px 14px;width:260px;outline:none;}
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{background:linear-gradient(90deg,var(--ntpc-dark),var(--ntpc-blue));color:#fff;padding:10px 11px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-weight:700;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:hover{background:#f0f6ff;}
+tbody td{padding:9px 11px;}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+.b-green{background:var(--green-bg);color:var(--green);border:1px solid rgba(26,122,58,.2);}
+.b-red{background:var(--red-bg);color:var(--red);border:1px solid rgba(185,28,28,.2);}
+.b-blue{background:#eff6ff;color:var(--ntpc-blue);}
+.mrn{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--ntpc-mid);background:#eff6ff;padding:2px 6px;border-radius:4px;}
+.td-mute{color:var(--text-mute);}
+.td-name{font-weight:600;color:var(--ntpc-dark);}
+.mono{font-family:'Roboto Mono',monospace;}
+
+.sub-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;}
+.sub-tab{padding:10px 20px;background:none;border:none;font-weight:700;color:var(--text-mute);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-transform:uppercase;font-family:'Barlow',sans-serif;}
+.sub-tab:hover{color:var(--ntpc-blue);}
+.sub-tab.active{color:var(--ntpc-blue);border-bottom-color:var(--ntpc-blue);background:rgba(0,59,122,.03);}
+.sub-page{display:none;}
+.sub-page.active{display:block;animation:fadeUp .2s ease;}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,15,40,.65);display:none;align-items:center;justify-content:center;z-index:500;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:30px;max-width:640px;width:94%;max-height:90vh;overflow-y:auto;}
+.modal-head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--ntpc-blue);margin-bottom:20px;padding-bottom:14px;}
+.modal-head h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--ntpc-dark);}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.md{background:#f8fafc;border-radius:8px;padding:10px 14px;border:1px solid var(--border);}
+.md .k{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-mute);}
+.md .v{font-size:13px;font-weight:600;color:var(--ntpc-dark);margin-top:2px;}
+.md.full{grid-column:1/-1;}
+
+#pwdModal{position:fixed;inset:0;background:rgba(0,15,40,.75);display:none;align-items:center;justify-content:center;z-index:999;}
+#pwdModal.open{display:flex;}
+.pwd-box{background:#fff;border-radius:14px;padding:32px 36px;max-width:380px;width:92%;text-align:center;}
+.pwd-box h3{color:var(--red);margin-bottom:6px;}
+.pwd-box input{width:100%;padding:10px;border:1.5px solid var(--border2);border-radius:8px;font-size:16px;text-align:center;margin-bottom:16px;}
+.pwd-err{color:var(--red);font-size:12px;min-height:18px;}
+#toast{position:fixed;bottom:26px;right:26px;background:var(--ntpc-dark);color:#fff;padding:13px 22px;border-radius:9px;border-left:4px solid var(--gold-lt);transform:translateY(70px);opacity:0;transition:.3s;z-index:999;}
+#toast.show{transform:translateY(0);opacity:1;}
+.modal .fg input,.modal .fg select,.modal .fg textarea{background:#f8fafc;border:1.5px solid var(--border2);border-radius:7px;padding:8px 11px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:.2s;width:100%;}
+.modal .fg input:focus,.modal .fg select:focus,.modal .fg textarea:focus{border-color:var(--ntpc-mid);background:#fff;}
+.modal .fg label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-mid);display:block;margin-bottom:4px;}
+.wm{text-align:center;padding:8px;font-size:11px;color:var(--text-mute);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+@media(max-width:640px){.header-main{padding:10px 14px;}.main{padding:14px;}.form-row{grid-template-columns:1fr;}.main-tabs{padding:0 12px;}.main-tab{padding:9px 14px;font-size:12px;}}
+.autofill-banner{display:none;background:linear-gradient(135deg,#e0f2fe,#eff6ff);border:1.5px solid #0369a1;border-radius:10px;padding:12px 18px;margin-bottom:16px;align-items:center;gap:12px;}
+.autofill-banner.show{display:flex;}
+.autofill-banner .af-icon{font-size:22px;flex-shrink:0;}
+.autofill-banner .af-text{flex:1;}
+.autofill-banner .af-text strong{font-size:13px;color:#003b7a;display:block;}
+.autofill-banner .af-text span{font-size:12px;color:#0369a1;}
+.autofill-banner .af-clear{background:#fff;border:1.5px solid #0369a1;color:#0369a1;padding:5px 13px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;}
+.autofill-banner .af-clear:hover{background:#0369a1;color:#fff;}
+.field-locked input,.field-locked select,.field-locked textarea{background:#eef5ff !important;border-color:#93c5fd !important;color:#1e3a5f !important;cursor:default;}
+.field-locked label::after{content:' 🔒';font-size:10px;opacity:.55;}
+.material-section{border:2px dashed var(--gold);border-radius:10px;padding:14px 14px 6px;background:linear-gradient(135deg,#fffbeb,#fff);margin-top:4px;}
+.material-section-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:#92650a;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+
+/* ===== FLOWER INTRO ===== */
+#fi{position:fixed;inset:0;z-index:9999;background:#000c1a;cursor:crosshair;overflow:hidden;}
+#fi canvas{position:absolute;inset:0;width:100%;height:100%;}
+#fi-ui{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:2;}
+#fi-logo{width:82px;height:82px;border-radius:50%;background:rgba(255,255,255,.07);border:2px solid rgba(200,146,10,.55);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:#f5c842;text-align:center;line-height:1.2;box-shadow:0 0 32px rgba(200,146,10,.25);animation:fi-up 1s ease .3s both;}
+#fi-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:#fff;letter-spacing:2px;margin-top:14px;text-shadow:0 2px 20px rgba(0,0,0,.9);animation:fi-up 1s ease .5s both;}
+#fi-sub{font-size:13px;color:rgba(255,255,255,.5);margin-top:5px;letter-spacing:.4px;animation:fi-up 1s ease .7s both;}
+#fi-hint{font-size:12px;color:rgba(255,255,255,.32);margin-top:20px;animation:fi-blink 2s ease-in-out 1.2s infinite;}
+#fi-btn{pointer-events:all;margin-top:24px;padding:12px 40px;background:linear-gradient(135deg,#c8920a,#f5c842);border:none;border-radius:30px;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:#001f45;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 28px rgba(200,146,10,.45);transition:transform .15s,box-shadow .15s;animation:fi-up 1s ease 1.4s both;}
+#fi-btn:hover{transform:scale(1.07);box-shadow:0 8px 36px rgba(200,146,10,.65);}
+#fi.fi-hide{animation:fi-out .9s ease forwards;}
+@keyframes fi-up{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+@keyframes fi-blink{0%,100%{opacity:.32;}50%{opacity:.72;}}
+@keyframes fi-out{to{opacity:0;transform:scale(1.04);visibility:hidden;}}
+.scan-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(135deg,#fff8e1,#fef3c7);border:2px dashed var(--gold);border-radius:10px;padding:12px 16px;margin-bottom:14px;}
+.scan-bar .scan-info{display:flex;align-items:center;gap:12px;}
+.scan-bar .scan-ic{font-size:28px;}
+.scan-bar strong{display:block;font-size:14px;color:var(--ntpc-dark);font-weight:700;}
+.scan-bar span{display:block;font-size:11.5px;color:var(--text-mid);margin-top:2px;}
+.scan-bar.busy{opacity:.7;pointer-events:none;}
+.scan-spin{display:inline-block;width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-3px;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#apiKeyModal.open{display:flex !important;}
+</style>
+</head>
+<body>
+<!-- INTERACTIVE FLOWER INTRO -->
+<div id="fi">
+  <canvas id="fi-cv"></canvas>
+  <div id="fi-ui">
+    <div id="fi-logo">NTPC<br>Ltd</div>
+    <div id="fi-title">NTPC FGUTPP</div>
+    <div id="fi-sub">Store &amp; Material Inspection System · Unchahar</div>
+    <div id="fi-hint">✦ Click anywhere — flowers will bloom ✦</div>
+    <button id="fi-btn" onclick="fiClose()">Enter the System →</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-main">
+    <div class="logo-ring">
+      <span>NTPC<br>Ltd</span>
+    </div>
+    <div class="header-text">
+      <div class="company">National Thermal Power Corporation Limited</div>
+      <h1>FGUTPP – Store & Inspection System</h1>
+      <div class="subtitle">Lighting Store | Central Store Management + QA/QC</div>
+      <div class="address">Unchahar – 229406, Raebareli (Dist.) U.P.</div>
+    </div>
+    <div class="header-clock">
+      <div class="clock-time" id="clockTime">00:00:00</div>
+      <div class="clock-date" id="clockDate"></div>
+    </div>
+  </div>
+  <div class="main-tabs" style="justify-content:space-between;align-items:center;">
+    <div style="display:flex;gap:0;">
+      <button class="main-tab active" onclick="switchModule('lighting')">📦 Lighting Store Receipts</button>
+      <button class="main-tab" onclick="switchModule('inspection')">🔍 Material Inspection</button>
+      <button class="main-tab" onclick="switchModule('mrn')">♻️ Material Return Note (EMD)</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding-right:16px;padding-bottom:4px;">
+      <span id="sync-status" style="display:none;font-size:11px;color:rgba(255,255,255,.7);max-width:240px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></span>
+      <button onclick="loadFromGSheets()" id="syncBtn" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#f5c842;padding:6px 13px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;" title="Google Sheet se data refresh karo">🔄 Sync</button>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <!-- LIGHTING STORE RECEIPTS MODULE -->
+  <div id="lightingModule" class="module-page active">
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="showReceiptSubTab('receipt-dash')">📊 Dashboard</button>
+      <button class="sub-tab" onclick="showReceiptSubTab('receipt-add')">➕ Add Entry</button>
+      <button class="sub-tab" onclick="showReceiptSubTab('receipt-records')">📋 Receipt Records</button>
+    </div>
+    <div id="receipt-dash" class="sub-page active">
+      <div class="stats-row">
+        <div class="stat gold"><div class="stat-val" id="r-total">0</div><div class="stat-label">Total Receipts</div></div>
+        <div class="stat"><div class="stat-val" id="r-total-res">0</div><div class="stat-label">Total Qty in Reservation</div></div>
+        <div class="stat green"><div class="stat-val" id="r-total-iss">0</div><div class="stat-label">Total Issued Qty</div></div>
+        <div class="stat"><div class="stat-val" id="r-today">0</div><div class="stat-label">Today's Receipts</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Recent Receipts (Last 10)</h2><button class="btn btn-outline btn-sm" onclick="showReceiptSubTab('receipt-records')">View All →</button></div>
+        <div class="tbl-wrap"><table><thead><tr><th>S.No</th><th>Created By</th><th>Created Date</th><th>Material Code</th><th>Material Description</th><th>Unit</th><th>Qty in Reservation</th><th>Issued Qty</th><th>Receive Date</th><th>MRN / Gate Pass</th><th>Received By</th><th>Remarks</th></tr></thead><tbody id="receiptDashTbody"></tbody></table></div>
+        <div style="padding:6px 14px 10px;font-size:11px;color:#94a3b8;">* Entries with the same MRN No. are shown together in one group</div>
+      </div>
+    </div>
+    <div id="receipt-add" class="sub-page" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <h2>Add New Material Receipt (Lighting Store)</h2>
+          <div style="background:linear-gradient(135deg,var(--ntpc-blue),var(--ntpc-mid));color:#fff;padding:5px 14px;border-radius:20px;">🏭 Central Store → Lighting Store</div>
+        </div>
+        <div class="form-body">
+          <!-- Autofill Banner -->
+          <div class="autofill-banner" id="rec-autofill-banner">
+            <div class="af-icon">🔗</div>
+            <div class="af-text">
+              <strong id="rec-autofill-msg">Gate Pass details auto-filled</strong>
+              <span>Only fill the material fields below — other details are locked</span>
+            </div>
+            <button class="af-clear" onclick="recClearAutofill()">✕ New Entry</button>
+          </div>
+          <!-- AI Document Scanner -->
+          <div class="scan-bar">
+            <div class="scan-info"><div class="scan-ic">📷</div><div><strong>Auto-Fill by scanning document</strong><span>Take a photo of the document — AI will auto-fill all fields instantly. Photo is deleted after scan.</span></div></div>
+            <div class="scan-actions">
+              <button type="button" class="btn btn-gold btn-sm" onclick="document.getElementById('rec-scan-file').click()">📸 Scan Document</button>
+              <input type="file" id="rec-scan-file" accept="image/*" capture="environment" style="display:none" onchange="scanDocument('rec', this)"/>
+            </div>
+          </div>
+          <!-- Header Fields -->
+          <div class="form-section-title">📋 Gate Pass / Header Details</div>
+          <div class="form-row">
+            <div class="fg" id="rec-fg-mrn"><label>MRN / Gate Pass No. <span class="req">*</span></label><input type="text" id="rec-mrn" placeholder="e.g. MRN-2025-0142" oninput="recCheckGatePass(this.value)"/></div>
+            <div class="fg" id="rec-fg-created"><label>Created By <span class="req">*</span></label><input type="text" id="rec-created" placeholder="Your name"/></div>
+            <div class="fg" id="rec-fg-empno"><label>Emp. No. <span class="req">*</span></label><input type="text" id="rec-emp-no" placeholder="e.g. E12345"/></div>
+            <div class="fg" id="rec-fg-createddate"><label>Created Date <span class="req">*</span></label><input type="date" id="rec-created-date-display"/></div>
+            <div class="fg" id="rec-fg-date"><label>Receive Date <span class="req">*</span></label><input type="date" id="rec-date"/></div>
+            <div class="fg" id="rec-fg-recby"><label>Received By Name <span class="req">*</span></label><input type="text" id="rec-recby" placeholder="Receiver name"/></div>
+          </div>
+          <!-- Material Section (multi-row) -->
+          <div class="material-section" style="margin-top:16px;">
+            <div class="material-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>✏️ Material Details — You can add multiple items</span>
+              <button type="button" class="btn btn-gold btn-sm" onclick="recAddRow()">➕ Add Row</button>
+            </div>
+            <div class="tbl-wrap" style="margin-top:8px;">
+              <table id="rec-items-table" style="width:100%;border-collapse:collapse;">
+                <thead>
+                  <tr style="background:var(--ntpc-blue);color:#fff;">
+                    <th style="padding:6px;width:36px;">#</th>
+                    <th style="padding:6px;">Material Code *</th>
+                    <th style="padding:6px;">Material Description *</th>
+                    <th style="padding:6px;width:90px;">Unit *</th>
+                    <th style="padding:6px;width:100px;">Qty Reserv *</th>
+                    <th style="padding:6px;width:100px;">Issued Qty *</th>
+                    <th style="padding:6px;">Remarks</th>
+                    <th style="padding:6px;width:50px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="rec-items-body"></tbody>
+              </table>
+            </div>
+            <div style="font-size:11px;color:#64748b;margin-top:6px;">📷 The Scan Document button auto-fills a document with 10+ items in one go — all rows are created automatically.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="saveReceipt()">💾 Save Receipt</button>
+            <button class="btn btn-outline" onclick="clearReceiptForm()">🔄 Clear Form</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="receipt-records" class="sub-page" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <h2>All Receipt Records (Lighting Store)</h2>
+          <div class="toolbar">
+            <input class="search-inp" type="text" id="recSearchQ" placeholder="🔍 Search code, MRN, name..." oninput="renderReceipts()"/>
+            <button class="btn btn-gold btn-sm" onclick="exportReceiptCSV()">⬇ Export CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="printReceiptRecords()">🖨 Print Records</button>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table><thead><tr><th>S.No</th><th>Created By</th><th>Created Date</th><th>MRN / Gate Pass</th><th>Material Code</th><th>Material Description</th><th>Unit</th><th>Qty in Reservation</th><th>Issued Qty</th><th>Receive Date</th><th>Received By</th><th>Remarks</th><th>View/Edit</th><th>Delete</th></tr></thead><tbody id="receiptTbody"></tbody></table></div>
+        <div style="padding:6px 14px 0;font-size:11px;color:#94a3b8;">* One Delete button removes the entire Gate Pass / MRN group (all its material items)</div>
+        <div class="wm">NTPC FGUTPP — Central Store (Lighting Store) Material Received Record | Unchahar, Raebareli (U.P.) – 229406</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATERIAL RETURN NOTE (EMD) MODULE -->
+  <div id="mrnModule" class="module-page">
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="showMrnSubTab('mrn-dash')">📊 MRN Dashboard</button>
+      <button class="sub-tab" onclick="showMrnSubTab('mrn-add')">➕ Add MRN Entry</button>
+      <button class="sub-tab" onclick="showMrnSubTab('mrn-records')">📋 MRN Records</button>
+    </div>
+
+    <!-- MRN DASHBOARD -->
+    <div id="mrn-dash" class="sub-page active">
+      <div class="stats-row">
+        <div class="stat gold"><div class="stat-val" id="mrn-total">0</div><div class="stat-label">Total MRN Entries</div></div>
+        <div class="stat"><div class="stat-val" id="mrn-today">0</div><div class="stat-label">Today's Entries</div></div>
+        <div class="stat green"><div class="stat-val" id="mrn-net-wt">0</div><div class="stat-label">Total Net Wt (Kg)</div></div>
+        <div class="stat sky"><div class="stat-val" id="mrn-vehicles">0</div><div class="stat-label">Unique Vehicles</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Recent MRN Entries (Last 10)</h2><button class="btn btn-outline btn-sm" onclick="showMrnSubTab('mrn-records')">View All →</button></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>S.No</th><th>MRN No.</th><th>Date In</th><th>Date Out</th><th>Time In</th><th>Time Out</th><th>Product Name</th><th>Vehicle No.</th><th>Challan Net Wt (Kg)</th><th>UM</th><th>Scrap Returner</th><th>MRN Created By</th></tr></thead>
+            <tbody id="mrnDashTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MRN ADD ENTRY -->
+    <div id="mrn-add" class="sub-page" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <h2>Add Material Return Note (EMD)</h2>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn btn-gold btn-sm" onclick="printMrnForm()">🖨️ Print MRN</button>
+            <div style="background:linear-gradient(135deg,#1a7a3a,#2da050);color:#fff;padding:5px 14px;border-radius:20px;font-weight:700;font-size:13px;">♻️ Scrap / EMD Return</div>
+          </div>
+        </div>
+        <div class="form-body">
+          <!-- Autofill Banner -->
+          <div class="autofill-banner" id="mrn-autofill-banner">
+            <div class="af-icon">🔗</div>
+            <div class="af-text">
+              <strong id="mrn-autofill-msg">MRN No. details auto-filled</strong>
+              <span>Only fill the material fields below — other details are locked</span>
+            </div>
+            <button class="af-clear" onclick="mrnClearAutofill()">✕ New Entry</button>
+          </div>
+
+          <!-- AI Document Scanner -->
+          <div class="scan-bar">
+            <div class="scan-info"><div class="scan-ic">📷</div><div><strong>Auto-Fill by scanning MRN document</strong><span>Take a photo of the document — AI will auto-fill all fields instantly. Photo is deleted after scan.</span></div></div>
+            <div class="scan-actions">
+              <button type="button" class="btn btn-gold btn-sm" onclick="document.getElementById('mrn-scan-file').click()">📸 Scan Document</button>
+              <input type="file" id="mrn-scan-file" accept="image/*" capture="environment" style="display:none" onchange="scanDocument('mrn', this)"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">📋 MRN Document Details</div>
+          <div class="form-row">
+            <div class="fg" id="mrn-fg-no"><label>MRN No. <span class="req">*</span></label><input type="text" id="mrn-no" placeholder="e.g. MRN-EMD-2025-001" oninput="mrnCheckNo(this.value)"/></div>
+            <div class="fg" id="mrn-fg-datein"><label>Date In <span class="req">*</span></label><input type="date" id="mrn-date-in"/></div>
+            <div class="fg" id="mrn-fg-dateout"><label>Date Out</label><input type="date" id="mrn-date-out"/></div>
+            <div class="fg" id="mrn-fg-timein"><label>Time In <span class="req">*</span></label><input type="time" id="mrn-time-in"/></div>
+            <div class="fg" id="mrn-fg-timeout"><label>Time Out</label><input type="time" id="mrn-time-out"/></div>
+          </div>
+
+          <div class="form-section-title">🚛 Vehicle Details</div>
+          <div class="form-row">
+            <div class="fg" id="mrn-fg-vehicleno"><label>Vehicle No. <span class="req">*</span></label><input type="text" id="mrn-vehicle-no" placeholder="e.g. UP32 AB 1234"/></div>
+            <div class="fg" id="mrn-fg-returner"><label>Scrap Returner Name <span class="req">*</span></label><input type="text" id="mrn-returner-name" placeholder="Name of person returning material"/></div>
+            <div class="fg" id="mrn-fg-createdby"><label>MRN Created By <span class="req">*</span></label><input type="text" id="mrn-created-by" placeholder="Your name (staff who created MRN)"/></div>
+            <div class="fg" id="mrn-fg-empno"><label>Created By Emp. No. <span class="req">*</span></label><input type="text" id="mrn-emp-no" placeholder="e.g. E12345"/></div>
+          </div>
+
+          <!-- Material Section (multi-row) -->
+          <div class="material-section" style="margin-top:8px;">
+            <div class="material-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>✏️ Material Details — You can add multiple items</span>
+              <button type="button" class="btn btn-gold btn-sm" onclick="mrnAddRow()">➕ Add Row</button>
+            </div>
+            <div class="tbl-wrap" style="margin-top:8px;">
+              <table id="mrn-items-table" style="width:100%;border-collapse:collapse;">
+                <thead>
+                  <tr style="background:var(--ntpc-blue);color:#fff;">
+                    <th style="padding:6px;width:36px;">#</th>
+                    <th style="padding:6px;">Product Name *</th>
+                    <th style="padding:6px;width:120px;">Net Wt (Kg) *</th>
+                    <th style="padding:6px;width:90px;">UM *</th>
+                    <th style="padding:6px;">Remarks</th>
+                    <th style="padding:6px;width:50px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="mrn-items-body"></tbody>
+              </table>
+            </div>
+            <div style="font-size:11px;color:#64748b;margin-top:6px;">📷 The Scan Document button auto-fills a challan with 10+ items in one go.</div>
+            <!-- Hidden legacy inputs (kept for printMrnForm compatibility) -->
+            <input type="hidden" id="mrn-product-name"/>
+            <input type="hidden" id="mrn-net-weight"/>
+            <input type="hidden" id="mrn-um"/>
+            <input type="hidden" id="mrn-remarks"/>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="saveMrn()">💾 Save MRN</button>
+            <button class="btn btn-outline" onclick="clearMrnForm()">🔄 Clear Form</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MRN RECORDS -->
+    <div id="mrn-records" class="sub-page" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <h2>All MRN Records (Material Return Note – EMD)</h2>
+          <div class="toolbar">
+            <input class="search-inp" type="text" id="mrnSearchQ" placeholder="🔍 Search MRN, vehicle, product..." oninput="renderMrns()"/>
+            <span style="font-size:11px;font-weight:700;color:var(--text-mute);text-transform:uppercase;">From</span>
+            <input class="search-inp" type="date" id="mrnSearchDateFrom" style="width:155px" oninput="renderMrns()" title="From Date (Date In)"/>
+            <span style="font-size:11px;font-weight:700;color:var(--text-mute);text-transform:uppercase;">To</span>
+            <input class="search-inp" type="date" id="mrnSearchDateTo" style="width:155px" oninput="renderMrns()" title="To Date (Date In)"/>
+            <button class="btn btn-outline btn-sm" onclick="clearMrnDateSearch()">✕ Clear Dates</button>
+            <button class="btn btn-gold btn-sm" onclick="exportMrnCSV()">⬇ Export CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="printMrnRecords()">🖨 Print Records</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>S.No</th><th>MRN No.</th><th>Date In</th><th>Date Out</th><th>Time In</th><th>Time Out</th><th>Vehicle No.</th><th>Product Name</th><th>Net Wt (Kg)</th><th>UM</th><th>Scrap Returner</th><th>MRN Created By</th><th>Remarks</th><th>View/Edit</th><th>Delete</th></tr></thead>
+            <tbody id="mrnTbody"></tbody>
+          </table>
+        </div>
+        <div style="padding:6px 14px 0;font-size:11px;color:#94a3b8;">* One Delete button removes the entire MRN group (all its material items)</div>
+        <div class="wm">NTPC FGUTPP — Material Return Note (EMD) Register | Unchahar, Raebareli (U.P.) – 229406</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATERIAL INSPECTION MODULE -->
+  <div id="inspectionModule" class="module-page">
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="showInspSubTab('ins-dash')">📊 Inspection Dashboard</button>
+      <button class="sub-tab" onclick="showInspSubTab('ins-add')">➕ Add Inspection</button>
+      <button class="sub-tab" onclick="showInspSubTab('ins-rec')">📋 Inspection Records</button>
+    </div>
+    <div id="ins-dash" class="sub-page active">
+      <div class="stats-row">
+        <div class="stat gold"><div class="stat-val" id="ins-total">0</div><div class="stat-label">Total Inspections</div></div>
+        <div class="stat green"><div class="stat-val" id="ins-pass">0</div><div class="stat-label">Passed</div></div>
+        <div class="stat red"><div class="stat-val" id="ins-fail">0</div><div class="stat-label">Failed</div></div>
+        <div class="stat sky"><div class="stat-val" id="ins-partial">0</div><div class="stat-label">Partial Accept</div></div>
+        <div class="stat"><div class="stat-val" id="ins-today">0</div><div class="stat-label">Today's Inspections</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Recent Inspections (Last 10)</h2><button class="btn btn-outline btn-sm" onclick="showInspSubTab('ins-rec')">View All →</button></div>
+        <div class="tbl-wrap"><table><thead><tr><th>S.No</th><th>Posting Date</th><th>PO No.</th><th>Invoice No.</th><th>IBD No.</th><th>Vendor Name</th><th>Material Code</th><th>Material Description</th><th>Recv Qty</th><th>Acc Qty</th><th>Rej Qty</th><th>Result</th><th>Inspector</th><th>Date</th></tr></thead><tbody id="insDashTbody"></tbody></table></div>
+      </div>
+    </div>
+    <div id="ins-add" class="sub-page" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <h2>Add Inspection Record</h2>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn btn-gold btn-sm" onclick="printInspectionForm()">🖨️ Print Form</button>
+            <div style="background:linear-gradient(135deg,var(--ntpc-blue),var(--ntpc-mid));color:#fff;padding:5px 14px;border-radius:20px;font-weight:700;font-size:13px;">🔍 QC & Material Inspection</div>
+          </div>
+        </div>
+        <div class="form-body">
+          <!-- Autofill Banner -->
+          <div class="autofill-banner" id="ins-autofill-banner">
+            <div class="af-icon">🔗</div>
+            <div class="af-text">
+              <strong id="ins-autofill-msg">PO details auto-filled</strong>
+              <span>Only fill the material fields below — other details are locked</span>
+            </div>
+            <button class="af-clear" onclick="insClearAutofill()">✕ New Entry</button>
+          </div>
+          <!-- AI Document Scanner -->
+          <div class="scan-bar">
+            <div class="scan-info"><div class="scan-ic">📷</div><div><strong>Auto-Fill by scanning inspection document</strong><span>Take a photo of the document — AI will auto-fill all fields instantly. Photo is deleted after scan.</span></div></div>
+            <div class="scan-actions">
+              <button type="button" class="btn btn-gold btn-sm" onclick="document.getElementById('ins-scan-file').click()">📸 Scan Document</button>
+              <input type="file" id="ins-scan-file" accept="image/*" capture="environment" style="display:none" onchange="scanDocument('ins', this)"/>
+            </div>
+          </div>
+          <div class="form-section-title">📦 Purchase / Document Details</div>
+          <div class="form-row">
+            <div class="fg" id="ins-fg-pono"><label>PO No. <span class="req">*</span></label><input type="text" id="ins-po-no" oninput="insCheckPoNo(this.value)"/></div>
+            <div class="fg" id="ins-fg-postingdate"><label>Posting Date <span class="req">*</span></label><input type="date" id="ins-posting-date"/></div>
+            <div class="fg" id="ins-fg-invoiceno"><label>Invoice No.</label><input type="text" id="ins-invoice-no"/></div>
+            <div class="fg" id="ins-fg-ibdno"><label>IBD No.</label><input type="text" id="ins-ibd-no"/></div>
+          </div>
+          <div class="form-section-title">🏭 Vendor Details</div>
+          <div class="form-row">
+            <div class="fg" id="ins-fg-vendorcode"><label>Vendor Code</label><input type="text" id="ins-vendor-code"/></div>
+            <div class="fg" id="ins-fg-vendorname"><label>Vendor Name</label><input type="text" id="ins-vendor-name"/></div>
+          </div>
+          <!-- Material Section (multi-row) -->
+          <div class="material-section" style="margin-top:8px;">
+            <div class="material-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>✏️ Material Details — You can add multiple items</span>
+              <button type="button" class="btn btn-gold btn-sm" onclick="insAddRow()">➕ Add Row</button>
+            </div>
+            <div class="tbl-wrap" style="margin-top:8px;">
+              <table id="ins-items-table" style="width:100%;border-collapse:collapse;">
+                <thead>
+                  <tr style="background:var(--ntpc-blue);color:#fff;">
+                    <th style="padding:6px;width:36px;">#</th>
+                    <th style="padding:6px;">Material Code *</th>
+                    <th style="padding:6px;">Description *</th>
+                    <th style="padding:6px;width:80px;">UM *</th>
+                    <th style="padding:6px;width:90px;">Disp Qty</th>
+                    <th style="padding:6px;width:90px;">Recv Qty *</th>
+                    <th style="padding:6px;width:90px;">Acc Qty *</th>
+                    <th style="padding:6px;width:90px;">Rej Qty</th>
+                    <th style="padding:6px;width:110px;">Result *</th>
+                    <th style="padding:6px;">Remarks</th>
+                    <th style="padding:6px;width:50px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="ins-items-body"></tbody>
+              </table>
+            </div>
+            <div style="font-size:11px;color:#64748b;margin-top:6px;">📷 The Scan Document button auto-fills 10+ items from the PO/Invoice in one go.</div>
+            <!-- Hidden legacy inputs (for compatibility with print/scan helpers) -->
+            <input type="hidden" id="ins-code"/>
+            <input type="hidden" id="ins-desc"/>
+            <input type="hidden" id="ins-um"/>
+            <input type="hidden" id="ins-disp-qty"/>
+            <input type="hidden" id="ins-qty-recv"/>
+            <input type="hidden" id="ins-qty-acc"/>
+            <input type="hidden" id="ins-qty-rej"/>
+            <input type="hidden" id="ins-result"/>
+            <input type="hidden" id="ins-remarks"/>
+          </div>
+          <div class="form-section-title">🔍 Inspector Details (Header — applies to all rows)</div>
+          <div class="form-row">
+            <div class="fg" id="ins-fg-inspector"><label>Inspector Name <span class="req">*</span></label><input type="text" id="ins-inspector"/></div>
+            <div class="fg" id="ins-fg-empno"><label>Inspector Emp. No. <span class="req">*</span></label><input type="text" id="ins-emp-no" placeholder="e.g. E12345"/></div>
+            <div class="fg" id="ins-fg-date"><label>Inspection Date <span class="req">*</span></label><input type="date" id="ins-date"/></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="saveInspection()">💾 Save</button>
+            <button class="btn btn-outline" onclick="clearInspectionForm()">🔄 Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="ins-rec" class="sub-page" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <h2>All Inspection Records</h2>
+          <div class="toolbar">
+            <input class="search-inp" id="insSearchQ" placeholder="Search PO, material..." oninput="renderInspections()"/>
+            <button class="btn btn-gold btn-sm" onclick="exportInspectionCSV()">⬇ CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="printInspectionRecords()">🖨 Print Records</button>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table><thead><tr><th>S.No</th><th>Created Date</th><th>PO No.</th><th>Material Code</th><th>Material Desc</th><th>Recv Qty</th><th>Acc Qty</th><th>Rej Qty</th><th>Result</th><th>Inspector</th><th>Insp. Date</th><th>View/Edit</th><th>Delete</th></tr></thead><tbody id="insTbody"></tbody></table></div>
+        <div style="padding:6px 14px 0;font-size:11px;color:#94a3b8;">* One Delete button removes the entire PO group (all its material items)</div>
+        <div class="wm">NTPC FGUTPP — QA/QC Material Inspection Records | Unchahar, Raebareli (U.P.) – 229406</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal-bg" id="mrnModalBg" onclick="if(event.target.id==='mrnModalBg')closeMrnModal()">
+  <div class="modal"><div class="modal-head"><h3>♻️ MRN Detail</h3><button class="modal-close" onclick="closeMrnModal()">✕</button></div><div class="modal-grid" id="mrnModalBody"></div><div style="margin-top:18px;text-align:right;"><button class="btn btn-outline" onclick="closeMrnModal()">Close</button></div></div>
+</div>
+<div class="modal-bg" id="receiptModalBg" onclick="if(event.target.id==='receiptModalBg')closeReceiptModal()">
+  <div class="modal"><div class="modal-head"><h3>📄 Receipt Detail</h3><button class="modal-close" onclick="closeReceiptModal()">✕</button></div><div class="modal-grid" id="receiptModalBody"></div><div style="margin-top:18px;text-align:right;"><button class="btn btn-outline" onclick="closeReceiptModal()">Close</button></div></div>
+</div>
+<div class="modal-bg" id="insModalBg" onclick="if(event.target.id==='insModalBg')closeInsModal()">
+  <div class="modal"><div class="modal-head"><h3>🔍 Inspection Detail</h3><button class="modal-close" onclick="closeInsModal()">✕</button></div><div class="modal-grid" id="insModalBody"></div><div style="text-align:right;margin-top:18px;"><button class="btn btn-outline" onclick="closeInsModal()">Close</button></div></div>
+</div>
+
+<!-- EDIT MODAL - RECEIPT -->
+<div class="modal-bg" id="editReceiptModalBg" onclick="if(event.target.id==='editReceiptModalBg')closeEditReceiptModal()">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-head"><h3>✏️ Edit Receipt</h3><button class="modal-close" onclick="closeEditReceiptModal()">✕</button></div>
+    <input type="hidden" id="edit-rec-id"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>Created By *</label><input type="text" id="edit-rec-created"/></div>
+      <div class="fg"><label>Emp. No. *</label><input type="text" id="edit-rec-emp-no"/></div>
+      <div class="fg"><label>Receive Date *</label><input type="date" id="edit-rec-date"/></div>
+      <div class="fg"><label>MRN / Gate Pass No. *</label><input type="text" id="edit-rec-mrn"/></div>
+      <div class="fg"><label>Material Code *</label><input type="text" id="edit-rec-code"/></div>
+      <div class="fg" style="grid-column:1/-1"><label>Material Description *</label><input type="text" id="edit-rec-desc"/></div>
+      <div class="fg"><label>Unit *</label><input type="text" id="edit-rec-unit"/></div>
+      <div class="fg"><label>Qty in Reservation *</label><input type="number" id="edit-rec-qty-res" min="0"/></div>
+      <div class="fg"><label>Issued Qty *</label><input type="number" id="edit-rec-qty-iss" min="0"/></div>
+      <div class="fg"><label>Received By *</label><input type="text" id="edit-rec-recby"/></div>
+      <div class="fg" style="grid-column:1/-1"><label>Remarks</label><textarea id="edit-rec-remarks" rows="2"></textarea></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="saveEditReceipt()">💾 Update Receipt</button><button class="btn btn-outline" onclick="closeEditReceiptModal()">Cancel</button></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL - INSPECTION -->
+<div class="modal-bg" id="editInsModalBg" onclick="if(event.target.id==='editInsModalBg')closeEditInsModal()">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-head"><h3>✏️ Edit Inspection</h3><button class="modal-close" onclick="closeEditInsModal()">✕</button></div>
+    <input type="hidden" id="edit-ins-id"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>Posting Date *</label><input type="date" id="edit-ins-posting-date"/></div>
+      <div class="fg"><label>PO No. *</label><input type="text" id="edit-ins-po-no"/></div>
+      <div class="fg"><label>Invoice No.</label><input type="text" id="edit-ins-invoice-no"/></div>
+      <div class="fg"><label>IBD No.</label><input type="text" id="edit-ins-ibd-no"/></div>
+      <div class="fg"><label>Vendor Code</label><input type="text" id="edit-ins-vendor-code"/></div>
+      <div class="fg"><label>Vendor Name</label><input type="text" id="edit-ins-vendor-name"/></div>
+      <div class="fg"><label>Material Code *</label><input type="text" id="edit-ins-code"/></div>
+      <div class="fg" style="grid-column:1/-1"><label>Material Description *</label><input type="text" id="edit-ins-desc"/></div>
+      <div class="fg"><label>UM *</label><input type="text" id="edit-ins-um"/></div>
+      <div class="fg"><label>Dispatch Qty</label><input type="number" id="edit-ins-disp-qty"/></div>
+      <div class="fg"><label>Received Qty *</label><input type="number" id="edit-ins-qty-recv" oninput="editInsCalcRej()"/></div>
+      <div class="fg"><label>Accepted Qty *</label><input type="number" id="edit-ins-qty-acc" oninput="editInsCalcRej()"/></div>
+      <div class="fg"><label>Rejected Qty</label><input type="number" id="edit-ins-qty-rej" readonly/></div>
+      <div class="fg"><label>Inspector *</label><input type="text" id="edit-ins-inspector"/></div>
+      <div class="fg"><label>Emp. No. *</label><input type="text" id="edit-ins-emp-no"/></div>
+      <div class="fg"><label>Inspection Date *</label><input type="date" id="edit-ins-date"/></div>
+      <div class="fg"><label>Result *</label><select id="edit-ins-result"><option value="">--Select--</option><option value="Pass">Pass</option><option value="Fail">Fail</option><option value="Partial">Partial Accept</option></select></div>
+      <div class="fg" style="grid-column:1/-1"><label>Remarks</label><textarea id="edit-ins-remarks" rows="2"></textarea></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="saveEditInspection()">💾 Update Inspection</button><button class="btn btn-outline" onclick="closeEditInsModal()">Cancel</button></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL - MRN -->
+<div class="modal-bg" id="editMrnModalBg" onclick="if(event.target.id==='editMrnModalBg')closeEditMrnModal()">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-head"><h3>✏️ Edit MRN</h3><button class="modal-close" onclick="closeEditMrnModal()">✕</button></div>
+    <input type="hidden" id="edit-mrn-id"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>MRN No. *</label><input type="text" id="edit-mrn-no"/></div>
+      <div class="fg"><label>Date In *</label><input type="date" id="edit-mrn-date-in"/></div>
+      <div class="fg"><label>Date Out</label><input type="date" id="edit-mrn-date-out"/></div>
+      <div class="fg"><label>Time In *</label><input type="time" id="edit-mrn-time-in"/></div>
+      <div class="fg"><label>Time Out</label><input type="time" id="edit-mrn-time-out"/></div>
+      <div class="fg"><label>Vehicle No. *</label><input type="text" id="edit-mrn-vehicle-no"/></div>
+      <div class="fg" style="grid-column:1/-1"><label>Product Name *</label><input type="text" id="edit-mrn-product-name"/></div>
+      <div class="fg"><label>Net Weight (Kg) *</label><input type="number" id="edit-mrn-net-weight" min="0" step="0.01"/></div>
+      <div class="fg"><label>UM *</label><input type="text" id="edit-mrn-um"/></div>
+      <div class="fg"><label>Scrap Returner *</label><input type="text" id="edit-mrn-returner-name"/></div>
+      <div class="fg"><label>Created By *</label><input type="text" id="edit-mrn-created-by"/></div>
+      <div class="fg"><label>Emp. No. *</label><input type="text" id="edit-mrn-emp-no"/></div>
+      <div class="fg" style="grid-column:1/-1"><label>Remarks</label><textarea id="edit-mrn-remarks" rows="2"></textarea></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="saveEditMrn()">💾 Update MRN</button><button class="btn btn-outline" onclick="closeEditMrnModal()">Cancel</button></div>
+  </div>
+</div>
+<div id="pwdModal"><div class="pwd-box"><h3>🔐 Confirm Delete</h3><p style="margin-bottom:16px;font-size:13px;">Enter admin password to confirm deletion.</p><input type="password" id="pwdInput" placeholder="Password" onkeydown="if(event.key==='Enter')confirmDelete()"/><div class="pwd-err" id="pwdErr"></div><div style="display:flex;gap:10px;justify-content:center;"><button class="btn btn-danger" onclick="confirmDelete()">Delete</button><button class="btn btn-outline" onclick="cancelDelete()">Cancel</button></div></div></div>
+
+
+<div id="toast">Saved!</div>
+
+<script>
+// ==================== SHARED PRINT HEADER HTML ====================
+function ntpcPrintHeader(subtitle) {
+  const now = new Date();
+  return `<div class="ph">
+    <div class="ph-logo">
+      <svg viewBox="0 0 100 100" width="70" height="70">
+        <circle cx="50" cy="50" r="48" fill="#003b7a" stroke="#c8920a" stroke-width="4"/>
+        <polygon points="50,12 62,40 42,40" fill="#f5c842"/>
+        <rect x="42" y="40" width="16" height="3" fill="#f5c842" rx="1"/>
+        <line x1="50" y1="43" x2="32" y2="62" stroke="#f5c842" stroke-width="3"/>
+        <line x1="50" y1="43" x2="68" y2="62" stroke="#f5c842" stroke-width="3"/>
+        <line x1="32" y1="62" x2="68" y2="62" stroke="#f5c842" stroke-width="3"/>
+        <line x1="50" y1="43" x2="50" y2="78" stroke="#f5c842" stroke-width="3"/>
+        <line x1="50" y1="78" x2="32" y2="62" stroke="#f5c842" stroke-width="2"/>
+        <line x1="50" y1="78" x2="68" y2="62" stroke="#f5c842" stroke-width="2"/>
+        <text x="50" y="94" text-anchor="middle" font-family="Arial Black" font-size="10" font-weight="900" fill="#f5c842" letter-spacing="2">NTPC</text>
+      </svg>
+    </div>
+    <div class="ph-text">
+      <div class="ph-company">National Thermal Power Corporation Limited</div>
+      <div class="ph-name">NTPC – FGUTPP, Unchahar Thermal Power Project</div>
+      <div class="ph-addr">Unchahar – 229406, Raebareli (Dist.) U.P.</div>
+      <div class="ph-sub">${subtitle}</div>
+    </div>
+    <div class="ph-meta">
+      <div class="ph-date-lbl">Print Date</div>
+      <div class="ph-date">${now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</div>
+      <div class="ph-time">${now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div>
+    </div>
+  </div>`;
+}
+
+// ==================== COMMON PRINT STYLES ====================
+function printBaseStyles() {
+  return `
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Barlow',Arial,sans-serif;color:#1e293b;background:#fff;padding:16px 20px;font-size:12px;}
+
+  /* PRINT HEADER */
+  .ph{display:flex;align-items:center;gap:14px;border-bottom:4px solid #c8920a;padding-bottom:12px;margin-bottom:16px;}
+  .ph-logo{flex-shrink:0;}
+  .ph-text{flex:1;}
+  .ph-company{font-size:10px;font-weight:600;letter-spacing:1.5px;color:#475569;text-transform:uppercase;margin-bottom:2px;}
+  .ph-name{font-family:'Barlow Condensed',Arial,sans-serif;font-size:20px;font-weight:800;color:#001f45;line-height:1.1;}
+  .ph-addr{font-size:11px;color:#475569;margin-top:2px;}
+  .ph-sub{font-size:12px;color:#c8920a;font-weight:700;margin-top:3px;text-transform:uppercase;letter-spacing:.5px;}
+  .ph-meta{text-align:right;flex-shrink:0;}
+  .ph-date-lbl{font-size:9px;text-transform:uppercase;color:#94a3b8;letter-spacing:1px;}
+  .ph-date{font-size:14px;font-weight:700;color:#001f45;}
+  .ph-time{font-size:11px;color:#475569;}
+
+  /* SECTION TITLE */
+  .sec{font-family:'Barlow Condensed',Arial,sans-serif;font-size:12px;font-weight:800;color:#0056b3;text-transform:uppercase;letter-spacing:1px;border-bottom:1.5px solid #dde3ec;padding-bottom:4px;margin:14px 0 8px;}
+
+  /* FIELD GRID */
+  .fg{display:grid;gap:8px;}
+  .fg.c2{grid-template-columns:1fr 1fr;}
+  .fg.c3{grid-template-columns:1fr 1fr 1fr;}
+  .fg.c4{grid-template-columns:1fr 1fr 1fr 1fr;}
+  .fg.c5{grid-template-columns:1fr 1fr 1fr 1fr 1fr;}
+  .fb{border:1px solid #c5cfe0;border-radius:5px;padding:6px 10px;background:#f8fafc;}
+  .fb.span2{grid-column:span 2;}
+  .fb.span3{grid-column:span 3;}
+  .fb.spana{grid-column:1/-1;}
+  .fl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#64748b;margin-bottom:2px;}
+  .fv{font-size:12px;font-weight:600;color:#1e293b;min-height:16px;}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;margin-top:6px;}
+  thead th{background:#003b7a;color:#fff;padding:6px 9px;text-align:left;font-family:'Barlow Condensed',Arial,sans-serif;font-weight:700;font-size:11px;white-space:nowrap;}
+  tbody td{padding:6px 9px;border:1px solid #dde3ec;font-size:11px;vertical-align:top;word-break:break-word;white-space:normal;}
+  tbody tr:nth-child(even){background:#f8fafc;}
+
+  /* PO / MRN GROUP BOX */
+  .grp{border:2px solid #003b7a;border-radius:8px;margin-bottom:16px;overflow:hidden;page-break-inside:avoid;}
+  .grp-head{background:#003b7a;color:#fff;padding:8px 14px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+  .grp-head .gh-lbl{font-size:9px;text-transform:uppercase;color:rgba(255,255,255,.65);letter-spacing:1px;}
+  .grp-head .gh-val{font-size:14px;font-weight:800;font-family:'Barlow Condensed',Arial,sans-serif;color:#f5c842;}
+  .grp-head .gh-item{margin-right:16px;}
+  .grp-body{padding:12px;}
+
+  /* SIGNATURE */
+  .sig{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;margin-top:24px;}
+  .sig-b{text-align:center;}
+  .sig-l{border-top:1.5px solid #94a3b8;padding-top:5px;font-size:10px;color:#475569;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+
+  /* FOOTER */
+  .pf{margin-top:16px;padding-top:8px;border-top:1px solid #dde3ec;display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;}
+
+  /* RESULT */
+  .rpass{color:#1a7a3a;font-weight:700;}
+  .rfail{color:#b91c1c;font-weight:700;}
+  .rpart{color:#b45309;font-weight:700;}
+
+  @media print{
+    body{padding:8px 12px;}
+    @page{margin:8mm;size:A4 landscape;}
+    .grp{page-break-inside:avoid;}
+    td,th{word-break:break-word;white-space:normal!important;}
+    .sig{display:none!important;}
+  }`;
+}
+
+// ==================== COMMON UTILS ====================
+let receipts = JSON.parse(localStorage.getItem('ntpc_lighting_receipts')||'[]');
+const saveReceipts = () => { try { localStorage.setItem('ntpc_lighting_receipts', JSON.stringify(receipts)); } catch(e) { toast('⚠️ Storage full! Export CSV to backup data.','#b91c1c'); } };
+let insData = JSON.parse(localStorage.getItem('ntpc_ins_v2')||'[]');
+const insSave = () => { try { localStorage.setItem('ntpc_ins_v2', JSON.stringify(insData)); } catch(e) { toast('⚠️ Storage full! Export CSV to backup data.','#b91c1c'); } };
+const DELETE_PASSWORD = 'NTPC@1234';
+let pendingDeleteId=null, pendingDelInsId=null, pendingDeleteGroupKey=null, deleteMode=null;
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+// BUGFIX: new Date().toISOString() returns the date in UTC, not local time.
+// For India (UTC+5:30) this silently produced YESTERDAY's date for ~5.5 hours
+// every night (12:00 AM – 5:29 AM IST), breaking default form dates and the
+// "Today" stat counters. This helper always returns the LOCAL calendar date.
+function localISODate(d){
+  d = d || new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function fmtDate(d){
+  if(!d)return '—';
+  let s=String(d).trim();
+  // Strip any time portion: "2026-06-19T10:30:00" or "2026-06-19 10:30" → "2026-06-19"
+  s=s.split('T')[0].split(' ')[0];
+  // ISO yyyy-mm-dd
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)){let [y,m,day]=s.split('-');return `${day}/${m}/${y}`;}
+  // Already dd/mm/yyyy or dd-mm-yyyy or "19 Jun 2026" — return as-is (date only)
+  return s;
+}
+function stripTime(s){if(!s)return '';let str=String(s).trim();
+  // Remove trailing " HH:MM[:SS]" or "T..." segments
+  str=str.split('T')[0];
+  str=str.replace(/[, ]+\d{1,2}:\d{2}(:\d{2})?\s*(AM|PM|am|pm)?\s*$/,'');
+  return str.trim();
+}
+function fmt(v){return (v&&String(v).trim())?String(v).trim():'—';}
+function toast(msg,col){let t=document.getElementById('toast');t.textContent=msg;t.style.borderLeftColor=col||'#1a7a3a';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+function createdDisplay(e){if(e.createdDate)return `<div style="font-size:12px;font-weight:600;color:#003b7a">${stripTime(e.createdDate)}</div>`;if(e.savedAt){let d=new Date(e.savedAt);return `<div>${d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</div>`;}return '—';}
+function v(id){return document.getElementById(id).value.trim();}
+function tick(){let n=new Date();document.getElementById('clockTime').textContent=n.toLocaleTimeString('en-IN');document.getElementById('clockDate').textContent=n.toLocaleDateString('en-IN',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});}
+
+// ==================== LIGHTING STORE RECEIPTS ====================
+function renderReceiptStats(){
+  document.getElementById('r-total').textContent=receipts.length;
+  document.getElementById('r-total-res').textContent=receipts.reduce((a,b)=>a+(b.qtyRes||0),0);
+  document.getElementById('r-total-iss').textContent=receipts.reduce((a,b)=>a+(b.qtyIss||0),0);
+  let today=localISODate();
+  document.getElementById('r-today').textContent=receipts.filter(r=>r.date===today).length;
+}
+function renderReceiptDash(){
+  // Group by MRN — same MRN together, then the 10 most recent groups
+  const groups={};
+  receipts.forEach(e=>{const k=String(e.mrn||'(No MRN)');if(!groups[k])groups[k]=[];groups[k].push(e);});
+  const groupKeys=Object.keys(groups).slice(0,10);
+  let rows='';let sno=1;
+  groupKeys.forEach(mrn=>{
+    const items=groups[mrn];
+    const first=items[0];
+    const rowspan=items.length;
+    items.forEach((e,idx)=>{
+      rows+=`<tr style="${idx>0?'border-top:1px dashed #c5cfe0':''}${mrn!=='(No MRN)'&&rowspan>1?';background:linear-gradient(90deg,#f0f6ff,#fff)':''}">`;
+      if(idx===0){
+        rows+=`<td class="td-mute" rowspan="${rowspan}" style="border-right:2px solid #0056b3;text-align:center;vertical-align:middle;font-weight:700">${sno}</td>`;
+        rows+=`<td rowspan="${rowspan}" style="vertical-align:middle;border-right:1px solid #dde3ec"><b>${esc(first.created)}</b></td>`;
+        rows+=`<td rowspan="${rowspan}" style="vertical-align:middle;border-right:1px solid #dde3ec">${createdDisplay(first)}</td>`;
+      }
+      rows+=`<td><span class="mrn">${esc(e.code)}</span></td>`;
+      rows+=`<td class="td-name" style="max-width:200px;word-break:break-word">${esc(e.desc)}</td>`;
+      rows+=`<td>${esc(e.unit)}</td>`;
+      rows+=`<td style="font-weight:700;text-align:center">${e.qtyRes}</td>`;
+      rows+=`<td style="font-weight:700;color:#1a7a3a;text-align:center">${e.qtyIss}</td>`;
+      rows+=`<td class="mono">${fmtDate(e.date)}</td>`;
+      if(idx===0){
+        rows+=`<td rowspan="${rowspan}" style="vertical-align:middle;border-left:2px solid #0056b3"><span class="mrn" style="font-size:12px">${esc(mrn)}</span>${rowspan>1?`<br><span style="font-size:10px;color:#94a3b8">${rowspan} items</span>`:''}`;
+        rows+=`</td>`;
+        rows+=`<td rowspan="${rowspan}" style="vertical-align:middle">${esc(first.recby)}</td>`;
+      }
+      rows+=`<td class="td-mute" style="max-width:120px;word-break:break-word;font-size:12px">${esc(e.remarks||'').substring(0,40)||'—'}</td>`;
+      rows+='</tr>';
+    });
+    sno++;
+  });
+  document.getElementById('receiptDashTbody').innerHTML=rows||'<tr><td colspan="12" style="text-align:center;padding:18px;color:#94a3b8">No entries yet</td></tr>';
+}
+function renderReceipts(){
+  let q=(document.getElementById('recSearchQ').value||'').toLowerCase();
+  let filtered=q?receipts.filter(e=>e.code.toLowerCase().includes(q)||e.desc.toLowerCase().includes(q)||e.mrn.toLowerCase().includes(q)||e.created.toLowerCase().includes(q)):receipts;
+  let tbody=document.getElementById('receiptTbody');
+  if(!filtered.length){tbody.innerHTML='<tr><td colspan="14" style="text-align:center">No records</td></tr>';return;}
+  // Group by MRN / Gate Pass — same gate-pass items rendered together in one box
+  const groups={};const order=[];
+  filtered.forEach(e=>{const k=String(e.mrn||'(No MRN)');if(!groups[k]){groups[k]=[];order.push(k);}groups[k].push(e);});
+  let html='';let sno=1;
+  order.forEach(mrn=>{
+    const items=groups[mrn];const first=items[0];const rs=items.length;
+    items.forEach((e,idx)=>{
+      const gradient=(rs>1?';background:linear-gradient(90deg,#f0f6ff,#fff)':'');
+      html+=`<tr style="${idx>0?'border-top:1px dashed #c5cfe0':''}${gradient}">`;
+      if(idx===0){
+        html+=`<td class="td-mute" rowspan="${rs}" style="border-right:2px solid #0056b3;text-align:center;vertical-align:middle;font-weight:700">${sno}</td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;border-right:1px solid #dde3ec"><b>${esc(first.created)}</b></td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;border-right:1px solid #dde3ec">${createdDisplay(first)}</td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;border-right:2px solid #0056b3"><span class="mrn">${esc(mrn)}</span>${rs>1?`<br><span style="font-size:10px;color:#94a3b8">${rs} items</span>`:''}</td>`;
+      }
+      html+=`<td><span class="mrn">${esc(e.code)}</span></td>`;
+      html+=`<td class="td-name">${esc(e.desc)}</td>`;
+      html+=`<td>${esc(e.unit)}</td>`;
+      html+=`<td style="font-weight:700">${e.qtyRes}</td>`;
+      html+=`<td style="font-weight:700;color:#1a7a3a">${e.qtyIss}</td>`;
+      html+=`<td>${fmtDate(e.date)}</td>`;
+      if(idx===0){
+        html+=`<td rowspan="${rs}" style="vertical-align:middle">${esc(first.recby)}</td>`;
+      }
+      html+=`<td class="td-mute">${esc(e.remarks)||'—'}</td>`;
+      html+=`<td><button class="btn btn-outline btn-sm" onclick="viewReceipt(${e.id})">👁</button> <button class="btn btn-gold btn-sm" onclick="editReceipt(${e.id})">✏️</button></td>`;
+      if(idx===0){
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;text-align:center"><button class="btn btn-danger btn-sm" title="Delete entire Gate Pass / MRN group" onclick="delReceiptGroup(decodeURIComponent('${encodeURIComponent(mrn)}'))">🗑 Delete</button></td>`;
+      }
+      html+='</tr>';
+    });
+    sno++;
+  });
+  tbody.innerHTML=html;
+}
+// ===== Multi-row helpers for receipt items =====
+function recAddRow(data){
+  data = data || {};
+  const tbody = document.getElementById('rec-items-body');
+  if(!tbody) return;
+  const tr = document.createElement('tr');
+  tr.className = 'rec-item-row';
+  tr.innerHTML = `
+    <td style="padding:4px;text-align:center;font-weight:700;color:#475569;" class="rec-sno"></td>
+    <td style="padding:4px;"><input type="text" class="rec-code" placeholder="e.g. LED-36W-001" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;"/></td>
+    <td style="padding:4px;"><input type="text" class="rec-desc" placeholder="Material description" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;"/></td>
+    <td style="padding:4px;"><input type="text" class="rec-unit" placeholder="Nos" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;"/></td>
+    <td style="padding:4px;"><input type="number" class="rec-qty-res" placeholder="0" min="0" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;"/></td>
+    <td style="padding:4px;"><input type="number" class="rec-qty-iss" placeholder="0" min="0" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;"/></td>
+    <td style="padding:4px;"><input type="text" class="rec-remarks" placeholder="Remarks" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;"/></td>
+    <td style="padding:4px;text-align:center;"><button type="button" class="btn btn-danger btn-sm" onclick="recRemoveRow(this)" title="Remove row">🗑</button></td>
+  `;
+  tbody.appendChild(tr);
+  tr.querySelector('.rec-code').value = data.code || '';
+  tr.querySelector('.rec-desc').value = data.desc || '';
+  tr.querySelector('.rec-unit').value = data.unit || '';
+  tr.querySelector('.rec-qty-res').value = (data.qtyRes!=null && data.qtyRes!=='') ? data.qtyRes : '';
+  tr.querySelector('.rec-qty-iss').value = (data.qtyIss!=null && data.qtyIss!=='') ? data.qtyIss : '';
+  tr.querySelector('.rec-remarks').value = data.remarks || '';
+  recRenumberRows();
+  return tr;
+}
+
+// ===== Multi-row helpers for inspection items =====
+function insAddRow(data){
+  data = data || {};
+  const tbody = document.getElementById('ins-items-body'); if(!tbody) return;
+  const tr = document.createElement('tr'); tr.className='ins-item-row';
+  const ipStyle = 'width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;';
+  tr.innerHTML = `
+    <td style="padding:4px;text-align:center;font-weight:700;color:#475569;" class="ins-sno"></td>
+    <td style="padding:4px;"><input type="text" class="ins-r-code" placeholder="Code" style="${ipStyle}"/></td>
+    <td style="padding:4px;"><input type="text" class="ins-r-desc" placeholder="Description" style="${ipStyle}"/></td>
+    <td style="padding:4px;"><input type="text" class="ins-r-um" placeholder="Nos" style="${ipStyle}"/></td>
+    <td style="padding:4px;"><input type="number" class="ins-r-disp" placeholder="0" min="0" style="${ipStyle}"/></td>
+    <td style="padding:4px;"><input type="number" class="ins-r-recv" placeholder="0" min="0" style="${ipStyle}" oninput="insRowCalcRej(this)"/></td>
+    <td style="padding:4px;"><input type="number" class="ins-r-acc" placeholder="0" min="0" style="${ipStyle}" oninput="insRowCalcRej(this)"/></td>
+    <td style="padding:4px;"><input type="number" class="ins-r-rej" placeholder="0" min="0" style="${ipStyle};background:#f1f5f9;" readonly/></td>
+    <td style="padding:4px;"><select class="ins-r-result" style="${ipStyle}"><option value="">--</option><option value="Pass">Pass</option><option value="Fail">Fail</option><option value="Partial">Partial</option></select></td>
+    <td style="padding:4px;"><input type="text" class="ins-r-remarks" placeholder="Remarks" style="${ipStyle}"/></td>
+    <td style="padding:4px;text-align:center;"><button type="button" class="btn btn-danger btn-sm" onclick="insRemoveRow(this)" title="Remove row">🗑</button></td>`;
+  tbody.appendChild(tr);
+  tr.querySelector('.ins-r-code').value = data.code || '';
+  tr.querySelector('.ins-r-desc').value = data.desc || '';
+  tr.querySelector('.ins-r-um').value = data.um || '';
+  tr.querySelector('.ins-r-disp').value = (data.dispQty!=null && data.dispQty!=='') ? data.dispQty : '';
+  tr.querySelector('.ins-r-recv').value = (data.qtyRecv!=null && data.qtyRecv!=='') ? data.qtyRecv : '';
+  tr.querySelector('.ins-r-acc').value = (data.qtyAcc!=null && data.qtyAcc!=='') ? data.qtyAcc : '';
+  tr.querySelector('.ins-r-result').value = data.result || '';
+  tr.querySelector('.ins-r-remarks').value = data.remarks || '';
+  insRowCalcRej(tr.querySelector('.ins-r-recv'));
+  insRenumberRows();
+  return tr;
+}
+function insRowCalcRej(inp){
+  const tr = inp.closest('tr'); if(!tr) return;
+  const r = parseFloat(tr.querySelector('.ins-r-recv').value)||0;
+  const a = parseFloat(tr.querySelector('.ins-r-acc').value)||0;
+  tr.querySelector('.ins-r-rej').value = Math.max(0, r-a);
+}
+function insRemoveRow(btn){
+  const tr = btn.closest('tr'); if(!tr) return;
+  const tbody = document.getElementById('ins-items-body');
+  tr.remove();
+  if(tbody && tbody.children.length===0) insAddRow();
+  insRenumberRows();
+}
+function insRenumberRows(){
+  document.querySelectorAll('#ins-items-body .ins-item-row').forEach((r,i)=>{ const c=r.querySelector('.ins-sno'); if(c) c.textContent=(i+1); });
+}
+function insClearRows(){
+  const tbody = document.getElementById('ins-items-body'); if(tbody) tbody.innerHTML='';
+  insAddRow();
+}
+function insCollectRows(){
+  const out=[];
+  document.querySelectorAll('#ins-items-body .ins-item-row').forEach(r=>{
+    const code=(r.querySelector('.ins-r-code').value||'').trim();
+    const desc=(r.querySelector('.ins-r-desc').value||'').trim();
+    const um=(r.querySelector('.ins-r-um').value||'').trim();
+    const disp=r.querySelector('.ins-r-disp').value;
+    const recv=r.querySelector('.ins-r-recv').value;
+    const acc=r.querySelector('.ins-r-acc').value;
+    const result=r.querySelector('.ins-r-result').value;
+    const remarks=(r.querySelector('.ins-r-remarks').value||'').trim();
+    if(!code && !desc && !um && disp==='' && recv==='' && acc==='' && !result && !remarks) return;
+    out.push({code,desc,um,dispQty:parseFloat(disp)||0,qtyRecv:parseFloat(recv),qtyAcc:parseFloat(acc),result,remarks});
+  });
+  return out;
+}
+
+// ===== Multi-row helpers for MRN items =====
+function mrnAddRow(data){
+  data = data || {};
+  const tbody = document.getElementById('mrn-items-body'); if(!tbody) return;
+  const tr = document.createElement('tr'); tr.className='mrn-item-row';
+  const ipStyle = 'width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;';
+  tr.innerHTML = `
+    <td style="padding:4px;text-align:center;font-weight:700;color:#475569;" class="mrn-sno"></td>
+    <td style="padding:4px;"><input type="text" class="mrn-r-product" placeholder="e.g. MS Scrap, Copper Scrap" style="${ipStyle}"/></td>
+    <td style="padding:4px;"><input type="number" class="mrn-r-weight" placeholder="0.00" min="0" step="0.01" style="${ipStyle}"/></td>
+    <td style="padding:4px;"><input type="text" class="mrn-r-um" placeholder="Kg" style="${ipStyle}"/></td>
+    <td style="padding:4px;"><input type="text" class="mrn-r-remarks" placeholder="Remarks" style="${ipStyle}"/></td>
+    <td style="padding:4px;text-align:center;"><button type="button" class="btn btn-danger btn-sm" onclick="mrnRemoveRow(this)" title="Remove row">🗑</button></td>`;
+  tbody.appendChild(tr);
+  tr.querySelector('.mrn-r-product').value = data.productName || '';
+  tr.querySelector('.mrn-r-weight').value = (data.netWeight!=null && data.netWeight!=='') ? data.netWeight : '';
+  tr.querySelector('.mrn-r-um').value = data.um || '';
+  tr.querySelector('.mrn-r-remarks').value = data.remarks || '';
+  mrnRenumberRows();
+  return tr;
+}
+function mrnRemoveRow(btn){
+  const tr=btn.closest('tr'); if(!tr) return;
+  const tbody=document.getElementById('mrn-items-body');
+  tr.remove();
+  if(tbody && tbody.children.length===0) mrnAddRow();
+  mrnRenumberRows();
+}
+function mrnRenumberRows(){
+  document.querySelectorAll('#mrn-items-body .mrn-item-row').forEach((r,i)=>{ const c=r.querySelector('.mrn-sno'); if(c) c.textContent=(i+1); });
+}
+function mrnClearRows(){
+  const tbody=document.getElementById('mrn-items-body'); if(tbody) tbody.innerHTML='';
+  mrnAddRow();
+}
+function mrnCollectRows(){
+  const out=[];
+  document.querySelectorAll('#mrn-items-body .mrn-item-row').forEach(r=>{
+    const productName=(r.querySelector('.mrn-r-product').value||'').trim();
+    const weightRaw=r.querySelector('.mrn-r-weight').value;
+    const um=(r.querySelector('.mrn-r-um').value||'').trim();
+    const remarks=(r.querySelector('.mrn-r-remarks').value||'').trim();
+    if(!productName && weightRaw==='' && !um && !remarks) return;
+    out.push({productName,netWeight:parseFloat(weightRaw),um,remarks});
+  });
+  return out;
+}
+function recRemoveRow(btn){
+  const tr = btn.closest('tr'); if(!tr) return;
+  const tbody = document.getElementById('rec-items-body');
+  tr.remove();
+  if(tbody && tbody.children.length===0) recAddRow();
+  recRenumberRows();
+}
+function recRenumberRows(){
+  const rows = document.querySelectorAll('#rec-items-body .rec-item-row');
+  rows.forEach((r,i)=>{ const c=r.querySelector('.rec-sno'); if(c) c.textContent = (i+1); });
+}
+function recClearRows(){
+  const tbody = document.getElementById('rec-items-body');
+  if(tbody) tbody.innerHTML='';
+  recAddRow();
+}
+function recCollectRows(){
+  const rows = document.querySelectorAll('#rec-items-body .rec-item-row');
+  const out = [];
+  rows.forEach(r=>{
+    const code = (r.querySelector('.rec-code').value||'').trim();
+    const desc = (r.querySelector('.rec-desc').value||'').trim();
+    const unit = (r.querySelector('.rec-unit').value||'').trim();
+    const qtyResRaw = r.querySelector('.rec-qty-res').value;
+    const qtyIssRaw = r.querySelector('.rec-qty-iss').value;
+    const remarks = (r.querySelector('.rec-remarks').value||'').trim();
+    if(!code && !desc && !unit && qtyResRaw==='' && qtyIssRaw==='' && !remarks) return; // skip empty
+    out.push({code,desc,unit,qtyRes:parseFloat(qtyResRaw),qtyIss:parseFloat(qtyIssRaw),remarks});
+  });
+  return out;
+}
+
+function saveReceipt(){
+  let created=v('rec-created'),empNo=v('rec-emp-no'),date=v('rec-date'),mrn=v('rec-mrn'),recby=v('rec-recby'),manualCreatedDate=v('rec-created-date-display');
+  if(!created||!empNo||!date||!mrn||!recby||!manualCreatedDate){toast('⚠️ Please fill all header fields','#b91c1c');return;}
+  const items = recCollectRows();
+  if(items.length===0){toast('⚠️ Add at least one material row','#b91c1c');return;}
+  for(let i=0;i<items.length;i++){
+    const it=items[i];
+    if(!it.code||!it.desc||!it.unit||isNaN(it.qtyRes)||isNaN(it.qtyIss)){
+      toast(`⚠️ Row ${i+1}: fill all required fields`,'#b91c1c');return;
+    }
+  }
+  let now=new Date();
+  let cdObj=new Date(manualCreatedDate);
+  let createdDate=cdObj.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  const createdTime=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  items.forEach((it,idx)=>{
+    receipts.unshift({id:Date.now()+idx*100,created,empNo,date,mrn,code:it.code,desc:it.desc,unit:it.unit,qtyRes:it.qtyRes,qtyIss:it.qtyIss,recby,remarks:it.remarks,savedAt:now.toISOString(),createdDate:createdDate,createdTime:createdTime});
+  });
+  saveReceipts();
+  recClearRows();
+  const sameCount=receipts.filter(e=>e.mrn&&e.mrn.trim().toLowerCase()===mrn.trim().toLowerCase()).length;
+  document.getElementById('rec-autofill-msg').textContent=`Gate Pass "${mrn}" — ${sameCount} entr${sameCount>1?'ies':'y'} saved, add more material or press "New Entry"`;
+  document.getElementById('rec-autofill-banner').classList.add('show');
+  recLockHeader(true);
+  toast(`✅ ${items.length} item${items.length>1?'s':''} saved!`);
+  renderReceiptStats();renderReceiptDash();renderReceipts();
+}
+function clearReceiptForm(){['rec-created','rec-emp-no','rec-mrn','rec-recby'].forEach(id=>document.getElementById(id).value='');document.getElementById('rec-date').value=localISODate();const cdEl=document.getElementById('rec-created-date-display');if(cdEl){cdEl.value=localISODate();}recClearRows();recClearAutofill();}
+
+// ==================== AUTOFILL LOGIC — RECEIPT ====================
+const REC_HEADER_FIELDS=['rec-fg-mrn','rec-fg-created','rec-fg-empno','rec-fg-createddate','rec-fg-date','rec-fg-recby'];
+function recLockHeader(lock){REC_HEADER_FIELDS.forEach(id=>{const el=document.getElementById(id);if(el){if(lock)el.classList.add('field-locked');else el.classList.remove('field-locked');}});const inputs=['rec-created','rec-emp-no','rec-created-date-display','rec-date','rec-recby'];inputs.forEach(id=>{const el=document.getElementById(id);if(el)el.readOnly=lock;});// MRN field stays editable so user can type a new number
+}
+function recCheckGatePass(val){
+  if(!val||val.trim().length<2){recLockHeader(false);document.getElementById('rec-autofill-banner').classList.remove('show');return;}
+  const existing=receipts.filter(e=>e.mrn&&e.mrn.trim().toLowerCase()===val.trim().toLowerCase());
+  if(existing.length>0){
+    const ref=existing[0];
+    document.getElementById('rec-created').value=ref.created||'';
+    document.getElementById('rec-emp-no').value=ref.empNo||'';
+    document.getElementById('rec-date').value=ref.date||'';
+    document.getElementById('rec-recby').value=ref.recby||'';
+    // created date — convert back to YYYY-MM-DD
+    if(ref.createdDate){const d=new Date(ref.savedAt||Date.now());document.getElementById('rec-created-date-display').value=localISODate(d);}
+    recLockHeader(true);
+    document.getElementById('rec-autofill-msg').textContent=`Gate Pass "${val.trim()}" — ${existing.length} entry already exists — add new material`;
+    document.getElementById('rec-autofill-banner').classList.add('show');
+    // clear material fields
+    recClearRows();
+    setTimeout(()=>{const fr=document.querySelector('#rec-items-body .rec-code');if(fr)fr.focus();},100);
+  } else {
+    recLockHeader(false);
+    document.getElementById('rec-autofill-banner').classList.remove('show');
+  }
+}
+function recClearAutofill(){recLockHeader(false);document.getElementById('rec-autofill-banner').classList.remove('show');}
+
+// ==================== AUTOFILL LOGIC — INSPECTION ====================
+const INS_HEADER_FIELDS=['ins-fg-pono','ins-fg-postingdate','ins-fg-invoiceno','ins-fg-ibdno','ins-fg-vendorcode','ins-fg-vendorname','ins-fg-inspector','ins-fg-empno','ins-fg-date'];
+function insLockHeader(lock){INS_HEADER_FIELDS.forEach(id=>{const el=document.getElementById(id);if(el){if(lock)el.classList.add('field-locked');else el.classList.remove('field-locked');}});const inputs=['ins-posting-date','ins-invoice-no','ins-ibd-no','ins-vendor-code','ins-vendor-name','ins-inspector','ins-emp-no','ins-date'];inputs.forEach(id=>{const el=document.getElementById(id);if(el)el.readOnly=lock;});}
+function insCheckPoNo(val){
+  if(!val||val.trim().length<2){insLockHeader(false);document.getElementById('ins-autofill-banner').classList.remove('show');return;}
+  const existing=insData.filter(e=>e.poNo&&e.poNo.trim().toLowerCase()===val.trim().toLowerCase());
+  if(existing.length>0){
+    const ref=existing[0];
+    document.getElementById('ins-posting-date').value=ref.postingDate||'';
+    document.getElementById('ins-invoice-no').value=ref.invoiceNo||'';
+    document.getElementById('ins-ibd-no').value=ref.ibdNo||'';
+    document.getElementById('ins-vendor-code').value=ref.vendorCode||'';
+    document.getElementById('ins-vendor-name').value=ref.vendorName||'';
+    document.getElementById('ins-inspector').value=ref.inspector||'';
+    document.getElementById('ins-emp-no').value=ref.empNo||'';
+    document.getElementById('ins-date').value=ref.date||'';
+    insLockHeader(true);
+    document.getElementById('ins-autofill-msg').textContent=`PO "${val.trim()}" — ${existing.length} entry already exists — add new material`;
+    document.getElementById('ins-autofill-banner').classList.add('show');
+    ['ins-code','ins-desc','ins-um','ins-disp-qty','ins-qty-recv','ins-qty-acc','ins-qty-rej','ins-remarks'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('ins-result').value='';
+    setTimeout(()=>document.getElementById('ins-code').focus(),100);
+  } else {
+    insLockHeader(false);
+    document.getElementById('ins-autofill-banner').classList.remove('show');
+  }
+}
+function insClearAutofill(){insLockHeader(false);document.getElementById('ins-autofill-banner').classList.remove('show');}
+
+// ==================== AUTOFILL LOGIC — MRN ====================
+const MRN_HEADER_FIELDS=['mrn-fg-no','mrn-fg-datein','mrn-fg-dateout','mrn-fg-timein','mrn-fg-timeout','mrn-fg-vehicleno','mrn-fg-returner','mrn-fg-createdby','mrn-fg-empno'];
+function mrnLockHeader(lock){MRN_HEADER_FIELDS.forEach(id=>{const el=document.getElementById(id);if(el){if(lock)el.classList.add('field-locked');else el.classList.remove('field-locked');}});const inputs=['mrn-date-in','mrn-date-out','mrn-time-in','mrn-time-out','mrn-vehicle-no','mrn-returner-name','mrn-created-by','mrn-emp-no'];inputs.forEach(id=>{const el=document.getElementById(id);if(el)el.readOnly=lock;});}
+function mrnCheckNo(val){
+  if(!val||val.trim().length<2){mrnLockHeader(false);document.getElementById('mrn-autofill-banner').classList.remove('show');return;}
+  const existing=mrnData.filter(e=>e.mrnNo&&e.mrnNo.trim().toLowerCase()===val.trim().toLowerCase());
+  if(existing.length>0){
+    const ref=existing[0];
+    document.getElementById('mrn-date-in').value=ref.dateIn||'';
+    document.getElementById('mrn-date-out').value=ref.dateOut||'';
+    document.getElementById('mrn-time-in').value=ref.timeIn||'';
+    document.getElementById('mrn-time-out').value=ref.timeOut||'';
+    document.getElementById('mrn-vehicle-no').value=ref.vehicleNo||'';
+    document.getElementById('mrn-returner-name').value=ref.returnerName||'';
+    document.getElementById('mrn-created-by').value=ref.createdBy||'';
+    document.getElementById('mrn-emp-no').value=ref.empNo||'';
+    mrnLockHeader(true);
+    document.getElementById('mrn-autofill-msg').textContent=`MRN No. "${val.trim()}" — ${existing.length} entry already exists — add new material`;
+    document.getElementById('mrn-autofill-banner').classList.add('show');
+    ['mrn-product-name','mrn-net-weight','mrn-um','mrn-remarks'].forEach(id=>document.getElementById(id).value='');
+    setTimeout(()=>document.getElementById('mrn-product-name').focus(),100);
+  } else {
+    mrnLockHeader(false);
+    document.getElementById('mrn-autofill-banner').classList.remove('show');
+  }
+}
+function mrnClearAutofill(){mrnLockHeader(false);document.getElementById('mrn-autofill-banner').classList.remove('show');}
+
+function viewReceipt(id){
+  let e=receipts.find(x=>x.id===id);if(!e)return;
+  let cd=e.createdDate?e.createdDate:(e.savedAt?new Date(e.savedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—');
+  document.getElementById('receiptModalBody').innerHTML=`<div class="md"><div class="k">Created By</div><div class="v">${esc(e.created)}</div></div><div class="md"><div class="k">Emp. No.</div><div class="v">${esc(e.empNo)||'—'}</div></div><div class="md"><div class="k">Created Date</div><div class="v">${cd}</div></div><div class="md"><div class="k">MRN / Gate Pass</div><div class="v">${esc(e.mrn)}</div></div><div class="md"><div class="k">Material Code</div><div class="v">${esc(e.code)}</div></div><div class="md"><div class="k">Receive Date</div><div class="v">${fmtDate(e.date)}</div></div><div class="md"><div class="k">Unit / Qty in Reservation</div><div class="v">${e.unit} / ${e.qtyRes}</div></div><div class="md"><div class="k">Issued Qty</div><div class="v">${e.qtyIss}</div></div><div class="md"><div class="k">Received By</div><div class="v">${esc(e.recby)}</div></div><div class="md full"><div class="k">Description</div><div class="v">${esc(e.desc)}</div></div><div class="md full"><div class="k">Remarks</div><div class="v">${esc(e.remarks)||'—'}</div></div>`;
+  document.getElementById('receiptModalBg').classList.add('open');
+}
+function closeReceiptModal(){document.getElementById('receiptModalBg').classList.remove('open');}
+function delReceipt(id){pendingDeleteId=id;deleteMode='receipt';document.getElementById('pwdInput').value='';document.getElementById('pwdErr').innerHTML='';document.getElementById('pwdModal').classList.add('open');setTimeout(()=>document.getElementById('pwdInput').focus(),100);}
+function delReceiptGroup(mrn){pendingDeleteGroupKey=mrn;deleteMode='receipt-group';document.getElementById('pwdInput').value='';document.getElementById('pwdErr').innerHTML='';document.getElementById('pwdModal').classList.add('open');setTimeout(()=>document.getElementById('pwdInput').focus(),100);}
+function exportReceiptCSV(){if(!receipts.length){toast('No data','#b45309');return;}let headers=['S.No','Created By','Created Date','MRN / Gate Pass','Material Code','Description','Unit','Qty in Reservation','Issued Qty','Receive Date','Received By','Remarks'];let rows=receipts.map((e,i)=>[i+1,e.created,e.createdDate||'','"'+e.mrn+'"','"'+e.code+'"','"'+e.desc+'"',e.unit,e.qtyRes,e.qtyIss,e.date,e.recby,'"'+(e.remarks||'')+'"']);let csv=[headers,...rows].map(r=>r.join(',')).join('\n');let a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('\uFEFF'+csv);a.download=`Lighting_Receipts_${localISODate()}.csv`;a.click();toast('CSV exported');}
+function showReceiptSubTab(id){document.querySelectorAll('#lightingModule .sub-page').forEach(p=>p.style.display='none');document.querySelectorAll('#lightingModule .sub-tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).style.display='block';let idx=(id==='receipt-dash'?0:(id==='receipt-add'?1:2));document.querySelectorAll('#lightingModule .sub-tab')[idx].classList.add('active');if(id==='receipt-dash'){renderReceiptStats();renderReceiptDash();}if(id==='receipt-records')renderReceipts();}
+
+// ==================== RECEIPT RECORDS PRINT (Grouped by MRN) ====================
+function printReceiptRecords(){
+  if(!receipts.length){toast('No records to print','#b45309');return;}
+  // Group by MRN
+  const groups = {};
+  receipts.forEach(e=>{
+    const key = e.mrn||'(No MRN)';
+    if(!groups[key]) groups[key]=[];
+    groups[key].push(e);
+  });
+
+  let bodyHtml = '';
+  let sno = 1;
+  Object.keys(groups).forEach(mrn=>{
+    const items = groups[mrn];
+    const first = items[0];
+    bodyHtml += `<div class="grp">
+      <div class="grp-head">
+        <div class="gh-item"><div class="gh-lbl">MRN / Gate Pass No.</div><div class="gh-val">${esc(mrn)}</div></div>
+        <div class="gh-item"><div class="gh-lbl">Receive Date</div><div class="gh-val" style="font-size:12px;color:#fff">${fmtDate(first.date)}</div></div>
+        <div class="gh-item"><div class="gh-lbl">Created By</div><div class="gh-val" style="font-size:12px;color:#fff">${esc(first.created)} ${first.empNo?`(${esc(first.empNo)})`:''}  </div></div>
+        <div class="gh-item"><div class="gh-lbl">Received By</div><div class="gh-val" style="font-size:12px;color:#fff">${esc(first.recby)}</div></div>
+        <div class="gh-item"><div class="gh-lbl">Total Items</div><div class="gh-val" style="font-size:12px;color:#f5c842">${items.length}</div></div>
+      </div>
+      <div class="grp-body">
+        <table>
+          <thead><tr><th>S.No</th><th>Material Code</th><th>Material Description</th><th>Unit</th><th>Qty in Reservation</th><th>Issued Qty</th><th>Remarks</th></tr></thead>
+          <tbody>
+            ${items.map(e=>`<tr>
+              <td>${sno++}</td>
+              <td><b>${esc(e.code)}</b></td>
+              <td>${esc(e.desc)}</td>
+              <td>${esc(e.unit)}</td>
+              <td style="font-weight:700;text-align:center">${e.qtyRes}</td>
+              <td style="font-weight:700;text-align:center;color:#1a7a3a">${e.qtyIss}</td>
+              <td>${esc(e.remarks)||'—'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  });
+
+  const pw = window.open('','_blank','width=950,height=700');
+  pw.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Receipt Records – NTPC FGUTPP</title>
+  <style>${printBaseStyles()}</style></head><body>
+  ${ntpcPrintHeader('Lighting Store – Material Receipt Records')}
+  <div style="font-family:\'Barlow Condensed\',Arial,sans-serif;font-size:18px;font-weight:800;color:#003b7a;border-left:4px solid #c8920a;padding:6px 14px;margin-bottom:14px;background:linear-gradient(90deg,#eff6ff,transparent);">
+    📦 LIGHTING STORE — ALL RECEIPT RECORDS (${receipts.length} Total Entries)
+  </div>
+  ${bodyHtml}
+  <div class="sig">
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Store Keeper</div></div>
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Store In-charge</div></div>
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Authorized Signatory</div></div>
+  </div>
+  <div class="pf"><span>NTPC FGUTPP — Lighting Store Material Receipt Register | Unchahar – 229406, Raebareli (U.P.)</span><span>Page 1</span></div>
+  <script>window.onload=function(){window.print();};<\/script>
+  </body></html>`);
+  pw.document.close();
+}
+
+// ==================== INSPECTION MODULE ====================
+function renderInspectionStats(){
+  document.getElementById('ins-total').textContent=insData.length;
+  document.getElementById('ins-pass').textContent=insData.filter(e=>e.result==='Pass').length;
+  document.getElementById('ins-fail').textContent=insData.filter(e=>e.result==='Fail').length;
+  document.getElementById('ins-partial').textContent=insData.filter(e=>e.result==='Partial').length;
+  let today=localISODate();
+  document.getElementById('ins-today').textContent=insData.filter(e=>e.date===today).length;
+}
+function renderInsDash(){
+  // Group by PO No — same PO together
+  const groups={};
+  insData.forEach(e=>{const k=e.poNo||'(No PO)';if(!groups[k])groups[k]=[];groups[k].push(e);});
+  const groupKeys=Object.keys(groups).slice(0,10);
+  let rows='';let sno=1;
+  groupKeys.forEach(po=>{
+    const items=groups[po];
+    const first=items[0];
+    const rowspan=items.length;
+    items.forEach((e,idx)=>{
+      rows+=`<tr style="${idx>0?'border-top:1px dashed #c5cfe0':''}${rowspan>1?';background:linear-gradient(90deg,#f0f6ff,#fff)':''}">`;
+      if(idx===0){
+        rows+=`<td class="td-mute" rowspan="${rowspan}" style="border-right:2px solid #0056b3;text-align:center;vertical-align:middle;font-weight:700">${sno}</td>`;
+        rows+=`<td rowspan="${rowspan}" style="vertical-align:middle;border-right:1px solid #dde3ec" class="mono">${fmtDate(first.postingDate)}</td>`;
+        rows+=`<td rowspan="${rowspan}" style="vertical-align:middle;border-right:2px solid #0056b3"><span class="mrn" style="font-size:12px">${esc(po)}</span>${rowspan>1?`<br><span style="font-size:10px;color:#94a3b8">${rowspan} items</span>`:''}`;
+        rows+=`</td>`;
+      }
+      rows+=`<td class="td-mute">${esc(e.invoiceNo)||'—'}</td>`;
+      rows+=`<td class="td-mute">${esc(e.ibdNo)||'—'}</td>`;
+      rows+=`<td class="td-name">${esc(e.vendorName)||'—'}</td>`;
+      rows+=`<td><span class="mrn">${esc(e.code)}</span></td>`;
+      rows+=`<td class="td-name" style="max-width:160px;word-break:break-word">${esc(e.desc).substring(0,30)}</td>`;
+      rows+=`<td style="text-align:center;font-weight:700">${e.qtyRecv}</td>`;
+      rows+=`<td style="text-align:center;font-weight:700;color:#1a7a3a">${e.qtyAcc}</td>`;
+      rows+=`<td style="text-align:center;font-weight:700;color:#b91c1c">${e.qtyRej}</td>`;
+      rows+=`<td>${insResultBadge(e.result)}</td>`;
+      rows+=`<td>${esc(e.inspector)}</td>`;
+      rows+=`<td class="mono">${fmtDate(e.date)}</td>`;
+      rows+='</tr>';
+    });
+    sno++;
+  });
+  document.getElementById('insDashTbody').innerHTML=rows||'<tr><td colspan="14">No data</td></tr>';
+}
+function renderInspections(){
+  let q=document.getElementById('insSearchQ').value.toLowerCase();
+  let f=q?insData.filter(e=>(e.code||'').toLowerCase().includes(q)||(e.poNo||'').toLowerCase().includes(q)||(e.vendorName||'').toLowerCase().includes(q)):insData;
+  let tbody=document.getElementById('insTbody');
+  if(!f.length){tbody.innerHTML='<tr><td colspan="13">No records</td></tr>';return;}
+  // Group by PO No — same PO items rendered together in one box
+  const groups={};const order=[];
+  f.forEach(e=>{const k=e.poNo||'(No PO)';if(!groups[k]){groups[k]=[];order.push(k);}groups[k].push(e);});
+  let html='';let sno=1;
+  order.forEach(po=>{
+    const items=groups[po];const first=items[0];const rs=items.length;
+    items.forEach((e,idx)=>{
+      const gradient=(rs>1?';background:linear-gradient(90deg,#f0f6ff,#fff)':'');
+      html+=`<tr style="${idx>0?'border-top:1px dashed #c5cfe0':''}${gradient}">`;
+      if(idx===0){
+        html+=`<td class="td-mute" rowspan="${rs}" style="border-right:2px solid #0056b3;text-align:center;vertical-align:middle;font-weight:700">${sno}</td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;border-right:1px solid #dde3ec">${createdDisplay(first)}</td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;border-right:2px solid #0056b3"><span class="mrn">${esc(po)}</span>${rs>1?`<br><span style="font-size:10px;color:#94a3b8">${rs} items</span>`:''}</td>`;
+      }
+      html+=`<td><span class="mrn">${esc(e.code)}</span></td>`;
+      html+=`<td class="td-name">${esc(e.desc).substring(0,30)}</td>`;
+      html+=`<td style="text-align:center">${e.qtyRecv}</td>`;
+      html+=`<td style="text-align:center;color:#1a7a3a;font-weight:700">${e.qtyAcc}</td>`;
+      html+=`<td style="text-align:center;color:#b91c1c;font-weight:700">${e.qtyRej}</td>`;
+      html+=`<td>${insResultBadge(e.result)}</td>`;
+      html+=`<td>${esc(e.inspector)}</td>`;
+      html+=`<td class="mono">${fmtDate(e.date)}</td>`;
+      html+=`<td><button class="btn btn-outline btn-sm" onclick="viewInspection(${e.id})">👁</button> <button class="btn btn-gold btn-sm" onclick="editInspection(${e.id})">✏️</button></td>`;
+      if(idx===0){
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;text-align:center"><button class="btn btn-danger btn-sm" title="Delete entire PO group" onclick="delInspectionGroup(decodeURIComponent('${encodeURIComponent(po)}'))">🗑 Delete</button></td>`;
+      }
+      html+='</tr>';
+    });
+    sno++;
+  });
+  tbody.innerHTML=html;
+}
+function insCalcRej(){let r=parseFloat(document.getElementById('ins-qty-recv').value)||0;let a=parseFloat(document.getElementById('ins-qty-acc').value)||0;document.getElementById('ins-qty-rej').value=Math.max(0,r-a);}
+function insResultBadge(r){if(r==='Pass')return '<span class="badge b-green">✅ Pass</span>';if(r==='Fail')return '<span class="badge b-red">❌ Fail</span>';if(r==='Partial')return '<span class="badge b-blue">⚠️ Partial</span>';return '<span class="badge b-blue">'+esc(r)+'</span>';}
+function saveInspection(){
+  let pdate=v('ins-posting-date'),po=v('ins-po-no'),code=v('ins-code'),desc=v('ins-desc'),um=v('ins-um'),qrec=parseFloat(v('ins-qty-recv')),qacc=parseFloat(v('ins-qty-acc')),res=v('ins-result'),insp=v('ins-inspector'),empNo=v('ins-emp-no'),idate=v('ins-date');
+  if(!pdate||!po||!code||!desc||!um||isNaN(qrec)||isNaN(qacc)||!res||!insp||!empNo||!idate){toast('Fill required fields','#b91c1c');return;}
+  let now=new Date();
+  insData.unshift({id:Date.now(),postingDate:pdate,poNo:po,invoiceNo:v('ins-invoice-no'),ibdNo:v('ins-ibd-no'),vendorCode:v('ins-vendor-code'),vendorName:v('ins-vendor-name'),code,desc,um,dispQty:parseFloat(v('ins-disp-qty'))||0,qtyRecv:qrec,qtyAcc:qacc,qtyRej:Math.max(0,qrec-qacc),inspector:insp,empNo,date:idate,result:res,remarks:v('ins-remarks'),savedAt:now.toISOString(),createdDate:now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),createdTime:now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});
+  insSave();
+  // Only clear material fields, keep header for next material
+  ['ins-code','ins-desc','ins-um','ins-disp-qty','ins-qty-recv','ins-qty-acc','ins-qty-rej','ins-remarks'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ins-result').value='';
+  const sameCount=insData.filter(e=>e.poNo&&e.poNo.trim().toLowerCase()===po.trim().toLowerCase()).length;
+  document.getElementById('ins-autofill-msg').textContent=`PO "${po}" — ${sameCount} entr${sameCount>1?'ies':'y'} saved, add more material or press "New Entry"`;
+  document.getElementById('ins-autofill-banner').classList.add('show');
+  insLockHeader(true);
+  toast('✅ Inspection saved! Add more material or press New Entry');
+  renderInspectionStats();renderInsDash();renderInspections();
+  setTimeout(()=>document.getElementById('ins-code').focus(),300);
+}
+function clearInspectionForm(){['ins-posting-date','ins-po-no','ins-invoice-no','ins-ibd-no','ins-vendor-code','ins-vendor-name','ins-inspector','ins-emp-no','ins-date'].forEach(id=>{let el=document.getElementById(id);if(el)el.value='';});document.getElementById('ins-date').value=localISODate();document.getElementById('ins-posting-date').value=localISODate();if(typeof insClearRows==='function') insClearRows();insClearAutofill();}
+function viewInspection(id){
+  let e=insData.find(x=>x.id===id);if(!e)return;
+  let cd=e.createdDate?e.createdDate:(e.savedAt?new Date(e.savedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—');
+  document.getElementById('insModalBody').innerHTML=`<div class="md"><div class="k">Created Date</div><div class="v">${cd}</div></div><div class="md"><div class="k">PO No.</div><div class="v">${esc(e.poNo)}</div></div><div class="md"><div class="k">Material Code</div><div class="v">${esc(e.code)}</div></div><div class="md"><div class="k">Vendor Name</div><div class="v">${esc(e.vendorName)||'—'}</div></div><div class="md"><div class="k">Recv/Accept/Rej</div><div class="v">${e.qtyRecv} / ${e.qtyAcc} / ${e.qtyRej}</div></div><div class="md"><div class="k">Result</div><div class="v">${e.result}</div></div><div class="md"><div class="k">Inspector</div><div class="v">${esc(e.inspector)}</div></div><div class="md"><div class="k">Inspector Emp. No.</div><div class="v">${esc(e.empNo)||'—'}</div></div><div class="md"><div class="k">Inspection Date</div><div class="v">${fmtDate(e.date)}</div></div><div class="md"><div class="k">UM</div><div class="v">${esc(e.um)||'—'}</div></div><div class="md full"><div class="k">Material Description</div><div class="v">${esc(e.desc)}</div></div><div class="md full"><div class="k">Remarks</div><div class="v">${esc(e.remarks)||'—'}</div></div>`;
+  document.getElementById('insModalBg').classList.add('open');
+}
+function closeInsModal(){document.getElementById('insModalBg').classList.remove('open');}
+function delInspection(id){pendingDelInsId=id;deleteMode='inspection';document.getElementById('pwdInput').value='';document.getElementById('pwdErr').innerHTML='';document.getElementById('pwdModal').classList.add('open');}
+function delInspectionGroup(poNo){pendingDeleteGroupKey=poNo;deleteMode='inspection-group';document.getElementById('pwdInput').value='';document.getElementById('pwdErr').innerHTML='';document.getElementById('pwdModal').classList.add('open');setTimeout(()=>document.getElementById('pwdInput').focus(),100);}
+function showInspSubTab(id){document.querySelectorAll('#inspectionModule .sub-page').forEach(p=>p.style.display='none');document.querySelectorAll('#inspectionModule .sub-tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).style.display='block';let idx=(id==='ins-dash'?0:(id==='ins-add'?1:2));document.querySelectorAll('#inspectionModule .sub-tab')[idx].classList.add('active');if(id==='ins-dash'){renderInspectionStats();renderInsDash();}if(id==='ins-rec')renderInspections();}
+function exportInspectionCSV(){if(!insData.length){toast('No data','#b45309');return;}let h=['S.No','Created Date','PO No.','Invoice No.','IBD No.','Vendor Code','Vendor Name','Material Code','Description','UM','Dispatch Qty','Recv Qty','Acc Qty','Rej Qty','Result','Inspector','Insp. Date','Remarks'];let rows=insData.map((e,i)=>[i+1,(e.createdDate?e.createdDate:(e.savedAt?new Date(e.savedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—')),e.poNo,e.invoiceNo||'',e.ibdNo||'',e.vendorCode||'',e.vendorName||'',e.code,'"'+e.desc+'"',e.um||'',e.dispQty||0,e.qtyRecv,e.qtyAcc,e.qtyRej,e.result,e.inspector,e.date,'"'+(e.remarks||'')+'"']);let csv=[h,...rows].map(r=>r.join(',')).join('\n');let a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('\uFEFF'+csv);a.download=`Inspection_${localISODate()}.csv`;a.click();toast('CSV exported');}
+
+// ==================== INSPECTION FORM PRINT (Single Entry) ====================
+function printInspectionForm(){
+  const f={
+    postingDate:document.getElementById('ins-posting-date').value,
+    poNo:document.getElementById('ins-po-no').value,
+    invoiceNo:document.getElementById('ins-invoice-no').value,
+    ibdNo:document.getElementById('ins-ibd-no').value,
+    vendorCode:document.getElementById('ins-vendor-code').value,
+    vendorName:document.getElementById('ins-vendor-name').value,
+    inspector:document.getElementById('ins-inspector').value,
+    empNo:document.getElementById('ins-emp-no').value,
+    inspDate:document.getElementById('ins-date').value,
+  };
+  // Pull the actual material rows from the multi-row table (the old single
+  // hidden ins-code/ins-desc/etc. fields are never filled by the UI anymore)
+  const items = (typeof insCollectRows==='function') ? insCollectRows() : [];
+  function fmtD(d){if(!d)return '—';let [y,m,day]=d.split('-');return `${day}/${m}/${y}`;}
+
+  const itemRows = items.length ? items.map((it,i)=>{
+    const rej = Math.max(0,(parseFloat(it.qtyRecv)||0)-(parseFloat(it.qtyAcc)||0));
+    const rc = it.result==='Pass'?'rpass':it.result==='Fail'?'rfail':it.result==='Partial'?'rpart':'';
+    const rl = it.result==='Pass'?'✔ Pass':it.result==='Fail'?'✘ Fail':it.result==='Partial'?'⚠ Partial':fmt(it.result);
+    return `<tr>
+      <td>${i+1}</td>
+      <td><b>${fmt(it.code)}</b></td>
+      <td>${fmt(it.desc)}</td>
+      <td>${fmt(it.um)}</td>
+      <td style="text-align:center">${fmt(it.dispQty)}</td>
+      <td style="text-align:center;font-weight:700">${fmt(it.qtyRecv)}</td>
+      <td style="text-align:center;font-weight:700;color:#1a7a3a">${fmt(it.qtyAcc)}</td>
+      <td style="text-align:center;font-weight:700;color:#b91c1c">${rej}</td>
+      <td class="${rc}">${rl}</td>
+      <td>${fmt(it.remarks)}</td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="10" style="text-align:center;color:#94a3b8">No material rows added yet</td></tr>`;
+
+  const pw = window.open('','_blank','width=950,height=700');
+  pw.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Inspection Form – NTPC FGUTPP</title>
+  <style>${printBaseStyles()}</style></head><body>
+  ${ntpcPrintHeader('QC / QA — Material Inspection Form')}
+  <div style="font-family:\'Barlow Condensed\',Arial,sans-serif;font-size:18px;font-weight:800;color:#003b7a;border-left:4px solid #c8920a;padding:6px 14px;margin-bottom:14px;background:linear-gradient(90deg,#eff6ff,transparent);">
+    🔍 ADD INSPECTION RECORD
+  </div>
+
+  <div class="sec">📦 Purchase / Document Details</div>
+  <div class="fg c4">
+    <div class="fb"><div class="fl">Posting Date *</div><div class="fv">${fmtD(f.postingDate)}</div></div>
+    <div class="fb"><div class="fl">PO No. *</div><div class="fv">${fmt(f.poNo)}</div></div>
+    <div class="fb"><div class="fl">Invoice No.</div><div class="fv">${fmt(f.invoiceNo)}</div></div>
+    <div class="fb"><div class="fl">IBD No.</div><div class="fv">${fmt(f.ibdNo)}</div></div>
+  </div>
+
+  <div class="sec">🏭 Vendor Details</div>
+  <div class="fg c2">
+    <div class="fb"><div class="fl">Vendor Code</div><div class="fv">${fmt(f.vendorCode)}</div></div>
+    <div class="fb"><div class="fl">Vendor Name</div><div class="fv">${fmt(f.vendorName)}</div></div>
+  </div>
+
+  <div class="sec">🔩 Material Details (${items.length} item${items.length!==1?'s':''})</div>
+  <table style="margin-top:10px;">
+    <thead><tr><th>#</th><th>Material Code *</th><th>Description *</th><th>UM *</th><th>Dispatch</th><th>Recv Qty *</th><th>Acc Qty *</th><th>Rej Qty</th><th>Result *</th><th>Remarks</th></tr></thead>
+    <tbody>${itemRows}</tbody>
+  </table>
+
+  <div class="sec">🔍 Inspection Details (applies to all rows)</div>
+  <div class="fg c3">
+    <div class="fb"><div class="fl">Inspector Name *</div><div class="fv">${fmt(f.inspector)}</div></div>
+    <div class="fb"><div class="fl">Inspector Emp. No. *</div><div class="fv">${fmt(f.empNo)}</div></div>
+    <div class="fb"><div class="fl">Inspection Date *</div><div class="fv">${fmtD(f.inspDate)}</div></div>
+  </div>
+
+  <div class="sig">
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Inspector Signature</div></div>
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">QC Supervisor</div></div>
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Store In-charge</div></div>
+  </div>
+  <div class="pf">
+    <span>NTPC FGUTPP — QA/QC Material Inspection Record | Unchahar – 229406, Raebareli (U.P.)</span>
+    <span>Generated: ${new Date().toLocaleString('en-IN')}</span>
+  </div>
+  <script>window.onload=function(){window.print();};<\/script>
+  </body></html>`);
+  pw.document.close();
+}
+
+// ==================== INSPECTION RECORDS PRINT (All, Grouped by PO) ====================
+function printInspectionRecords(){
+  if(!insData.length){toast('No records to print','#b45309');return;}
+  // Group by PO No.
+  const groups = {};
+  insData.forEach(e=>{
+    const key = e.poNo||'(No PO)';
+    if(!groups[key]) groups[key]=[];
+    groups[key].push(e);
+  });
+
+  let bodyHtml = '';
+  let sno = 1;
+  Object.keys(groups).forEach(po=>{
+    const items = groups[po];
+    const first = items[0];
+    bodyHtml += `<div class="grp">
+      <div class="grp-head">
+        <div class="gh-item"><div class="gh-lbl">PO No.</div><div class="gh-val">${esc(po)}</div></div>
+        <div class="gh-item"><div class="gh-lbl">Posting Date</div><div class="gh-val" style="font-size:12px;color:#fff">${fmtDate(first.postingDate)}</div></div>
+        <div class="gh-item"><div class="gh-lbl">Vendor Name</div><div class="gh-val" style="font-size:12px;color:#fff">${esc(first.vendorName)||'—'}</div></div>
+        <div class="gh-item"><div class="gh-lbl">Invoice No.</div><div class="gh-val" style="font-size:12px;color:#f5c842">${esc(first.invoiceNo)||'—'}</div></div>
+        <div class="gh-item"><div class="gh-lbl">IBD No.</div><div class="gh-val" style="font-size:12px;color:#f5c842">${esc(first.ibdNo)||'—'}</div></div>
+        <div class="gh-item"><div class="gh-lbl">Total Items</div><div class="gh-val" style="font-size:12px;color:#f5c842">${items.length}</div></div>
+      </div>
+      <div class="grp-body">
+        <table>
+          <thead><tr><th>S.No</th><th>Material Code</th><th>Material Description</th><th>UM</th><th>Dispatch</th><th>Recv Qty</th><th>Acc Qty</th><th>Rej Qty</th><th>Result</th><th>Inspector</th><th>Emp. No.</th><th>Insp. Date</th><th>Remarks</th></tr></thead>
+          <tbody>
+            ${items.map(e=>{
+              const rc = e.result==='Pass'?'rpass':e.result==='Fail'?'rfail':'rpart';
+              const rl = e.result==='Pass'?'✔ Pass':e.result==='Fail'?'✘ Fail':e.result==='Partial'?'⚠ Partial':e.result||'—';
+              return `<tr>
+                <td>${sno++}</td>
+                <td><b>${esc(e.code)}</b></td>
+                <td>${esc(e.desc)}</td>
+                <td>${esc(e.um)||'—'}</td>
+                <td style="text-align:center">${e.dispQty||'—'}</td>
+                <td style="text-align:center;font-weight:700">${e.qtyRecv}</td>
+                <td style="text-align:center;font-weight:700;color:#1a7a3a">${e.qtyAcc}</td>
+                <td style="text-align:center;font-weight:700;color:#b91c1c">${e.qtyRej}</td>
+                <td class="${rc}">${rl}</td>
+                <td>${esc(e.inspector)}</td>
+                <td>${esc(e.empNo)||'—'}</td>
+                <td>${fmtDate(e.date)}</td>
+                <td>${esc(e.remarks)||'—'}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  });
+
+  const pw = window.open('','_blank','width=1100,height=700');
+  pw.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Inspection Records – NTPC FGUTPP</title>
+  <style>${printBaseStyles()}</style></head><body>
+  ${ntpcPrintHeader('QC / QA — Material Inspection Records Register')}
+  <div style="font-family:\'Barlow Condensed\',Arial,sans-serif;font-size:18px;font-weight:800;color:#003b7a;border-left:4px solid #c8920a;padding:6px 14px;margin-bottom:14px;background:linear-gradient(90deg,#eff6ff,transparent);">
+    🔍 ALL INSPECTION RECORDS — GROUPED BY PO No. (${insData.length} Total Entries)
+  </div>
+  ${bodyHtml}
+  <div class="sig">
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">QC Inspector</div></div>
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">QC Supervisor</div></div>
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Store In-charge</div></div>
+  </div>
+  <div class="pf"><span>NTPC FGUTPP — QA/QC Material Inspection Records Register | Unchahar – 229406, Raebareli (U.P.)</span><span>Page 1</span></div>
+  <script>window.onload=function(){window.print();};<\/script>
+  </body></html>`);
+  pw.document.close();
+}
+
+// ==================== SHARED FUNCTIONS ====================
+function confirmDelete(){
+  // This function is overridden below by window.confirmDelete (with GSheets sync)
+  // Keeping as fallback only — actual logic runs via window.confirmDelete
+  if(typeof window._confirmDeleteOverridden === 'undefined'){
+    let pwd=document.getElementById('pwdInput').value;
+    if(pwd===DELETE_PASSWORD){
+      if(deleteMode==='receipt'){tombstone('receipt',[pendingDeleteId]);receipts=receipts.filter(x=>x.id!==pendingDeleteId);saveReceipts();renderReceiptStats();renderReceiptDash();renderReceipts();toast('Receipt deleted','#b91c1c');}
+      else if(deleteMode==='inspection'){tombstone('inspection',[pendingDelInsId]);insData=insData.filter(x=>x.id!==pendingDelInsId);insSave();renderInspectionStats();renderInsDash();renderInspections();toast('Inspection deleted','#b91c1c');}
+      else if(deleteMode==='mrn'){tombstone('mrn',[pendingDeleteId]);mrnData=mrnData.filter(x=>x.id!==pendingDeleteId);mrnSave();renderMrnStats();renderMrnDash();renderMrns();toast('MRN deleted','#b91c1c');}
+      cancelDelete();
+    }else{document.getElementById('pwdErr').innerHTML='❌ Wrong password!';document.getElementById('pwdInput').value='';}
+  }
+}
+function cancelDelete(){deleteMode=null;pendingDeleteId=null;pendingDelInsId=null;pendingDeleteGroupKey=null;document.getElementById('pwdModal').classList.remove('open');}
+function switchModule(mod){
+  document.querySelectorAll('.module-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  if(mod==='lighting'){document.getElementById('lightingModule').classList.add('active');document.querySelectorAll('.main-tab')[0].classList.add('active');showReceiptSubTab('receipt-dash');}
+  else if(mod==='mrn'){document.getElementById('mrnModule').classList.add('active');document.querySelectorAll('.main-tab')[2].classList.add('active');showMrnSubTab('mrn-dash');}
+  else{document.getElementById('inspectionModule').classList.add('active');document.querySelectorAll('.main-tab')[1].classList.add('active');showInspSubTab('ins-dash');}
+}
+
+// ==================== MRN (MATERIAL RETURN NOTE – EMD) ====================
+let mrnData = JSON.parse(localStorage.getItem('ntpc_mrn_v1')||'[]');
+const mrnSave = () => { try { localStorage.setItem('ntpc_mrn_v1', JSON.stringify(mrnData)); } catch(e) { toast('⚠️ Storage full! Export CSV to backup data.','#b91c1c'); } };
+
+function renderMrnStats(){
+  document.getElementById('mrn-total').textContent = mrnData.length;
+  let today = localISODate();
+  document.getElementById('mrn-today').textContent = mrnData.filter(r=>r.dateIn===today).length;
+  let totalWt = mrnData.reduce((a,b)=>a+(parseFloat(b.netWeight)||0),0);
+  document.getElementById('mrn-net-wt').textContent = totalWt.toFixed(1);
+  let uniqueVeh = new Set(mrnData.map(r=>r.vehicleNo)).size;
+  document.getElementById('mrn-vehicles').textContent = uniqueVeh;
+}
+function renderMrnDash(){
+  // Group by MRN No — same MRN No together; date/vehicle at group level, time stays per row
+  const groups={};const order=[];
+  mrnData.forEach(e=>{const k=e.mrnNo||'(No MRN)';if(!groups[k]){groups[k]=[];order.push(k);}groups[k].push(e);});
+  const groupKeys=order.slice(0,10);
+  let rows='';let sno=1;
+  groupKeys.forEach(mrnNo=>{
+    const items=groups[mrnNo];const first=items[0];const rs=items.length;
+    items.forEach((e,idx)=>{
+      const gradient=(rs>1?';background:linear-gradient(90deg,#f0f6ff,#fff)':'');
+      rows+=`<tr style="${idx>0?'border-top:1px dashed #c5cfe0':''}${gradient}">`;
+      if(idx===0){
+        rows+=`<td class="td-mute" rowspan="${rs}" style="border-right:2px solid #0056b3;text-align:center;vertical-align:middle;font-weight:700">${sno}</td>`;
+        rows+=`<td rowspan="${rs}" style="vertical-align:middle;border-right:2px solid #0056b3"><span class="mrn" style="font-size:12px">${esc(mrnNo)}</span>${rs>1?`<br><span style="font-size:10px;color:#94a3b8">${rs} items</span>`:''}</td>`;
+        rows+=`<td rowspan="${rs}" style="vertical-align:middle">${fmtDate(first.dateIn)}</td>`;
+        rows+=`<td rowspan="${rs}" style="vertical-align:middle">${first.dateOut?fmtDate(first.dateOut):'—'}</td>`;
+      }
+      rows+=`<td class="mono">${esc(e.timeIn)||'—'}</td>`;
+      rows+=`<td class="mono">${esc(e.timeOut)||'—'}</td>`;
+      rows+=`<td class="td-name">${esc(e.productName)}</td>`;
+      if(idx===0){
+        rows+=`<td rowspan="${rs}" style="vertical-align:middle"><b>${esc(first.vehicleNo)}</b></td>`;
+      }
+      rows+=`<td style="font-weight:700;color:#0369a1">${parseFloat(e.netWeight||0).toFixed(1)}</td>`;
+      rows+=`<td>${esc(e.um)}</td>`;
+      if(idx===0){
+        rows+=`<td rowspan="${rs}" style="vertical-align:middle">${esc(first.returnerName)}</td>`;
+        rows+=`<td rowspan="${rs}" style="vertical-align:middle">${esc(first.createdBy)}</td>`;
+      }
+      rows+='</tr>';
+    });
+    sno++;
+  });
+  document.getElementById('mrnDashTbody').innerHTML=rows||'<tr><td colspan="12" style="text-align:center;padding:18px;color:#94a3b8">No entries yet</td></tr>';
+}
+function renderMrns(){
+  let q=(document.getElementById('mrnSearchQ').value||'').toLowerCase();
+  let dFrom=(document.getElementById('mrnSearchDateFrom').value||'');
+  let dTo=(document.getElementById('mrnSearchDateTo').value||'');
+  let filtered = mrnData.filter(e=>{
+    if(q){
+      const hit=(e.mrnNo||'').toLowerCase().includes(q)||(e.productName||'').toLowerCase().includes(q)||(e.vehicleNo||'').toLowerCase().includes(q)||(e.returnerName||'').toLowerCase().includes(q);
+      if(!hit) return false;
+    }
+    if(dFrom && (!e.dateIn || e.dateIn<dFrom)) return false;
+    if(dTo && (!e.dateIn || e.dateIn>dTo)) return false;
+    return true;
+  });
+  let tbody = document.getElementById('mrnTbody');
+  if(!filtered.length){tbody.innerHTML='<tr><td colspan="15" style="text-align:center;padding:18px;color:#94a3b8">No records found</td></tr>';return;}
+  // Group by MRN No — same MRN items in one box; time stays per row
+  const groups={};const order=[];
+  filtered.forEach(e=>{const k=e.mrnNo||'(No MRN)';if(!groups[k]){groups[k]=[];order.push(k);}groups[k].push(e);});
+  let html='';let sno=1;
+  order.forEach(mrnNo=>{
+    const items=groups[mrnNo];const first=items[0];const rs=items.length;
+    items.forEach((e,idx)=>{
+      const gradient=(rs>1?';background:linear-gradient(90deg,#f0f6ff,#fff)':'');
+      html+=`<tr style="${idx>0?'border-top:1px dashed #c5cfe0':''}${gradient}">`;
+      if(idx===0){
+        html+=`<td class="td-mute" rowspan="${rs}" style="border-right:2px solid #0056b3;text-align:center;vertical-align:middle;font-weight:700">${sno}</td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;border-right:2px solid #0056b3"><span class="mrn">${esc(mrnNo)}</span>${rs>1?`<br><span style="font-size:10px;color:#94a3b8">${rs} items</span>`:''}</td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle">${fmtDate(first.dateIn)}</td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle">${first.dateOut?fmtDate(first.dateOut):'—'}</td>`;
+      }
+      html+=`<td class="mono">${esc(e.timeIn)||'—'}</td>`;
+      html+=`<td class="mono">${esc(e.timeOut)||'—'}</td>`;
+      if(idx===0){
+        html+=`<td rowspan="${rs}" style="vertical-align:middle"><b>${esc(first.vehicleNo)}</b></td>`;
+      }
+      html+=`<td class="td-name">${esc(e.productName)}</td>`;
+      html+=`<td style="font-weight:700;color:#0369a1">${parseFloat(e.netWeight||0).toFixed(1)}</td>`;
+      html+=`<td>${esc(e.um)}</td>`;
+      if(idx===0){
+        html+=`<td rowspan="${rs}" style="vertical-align:middle">${esc(first.returnerName)}</td>`;
+        html+=`<td rowspan="${rs}" style="vertical-align:middle">${esc(first.createdBy)}</td>`;
+      }
+      html+=`<td class="td-mute">${esc(e.remarks)||'—'}</td>`;
+      html+=`<td>
+        <button class="btn btn-outline btn-sm" onclick="viewMrn(${e.id})">👁</button>
+        <button class="btn btn-gold btn-sm" onclick="editMrn(${e.id})">✏️</button>
+        <button class="btn btn-outline btn-sm" onclick="printSingleMrn(${e.id})">🖨</button>
+      </td>`;
+      if(idx===0){
+        html+=`<td rowspan="${rs}" style="vertical-align:middle;text-align:center"><button class="btn btn-danger btn-sm" title="Delete entire MRN group" onclick="delMrnGroup(decodeURIComponent('${encodeURIComponent(mrnNo)}'))">🗑 Delete</button></td>`;
+      }
+      html+='</tr>';
+    });
+    sno++;
+  });
+  tbody.innerHTML=html;
+}
+function saveMrn(){
+  let mrnNo=v('mrn-no'),dateIn=v('mrn-date-in'),dateOut=v('mrn-date-out'),timeIn=v('mrn-time-in'),timeOut=v('mrn-time-out'),vehicleNo=v('mrn-vehicle-no'),productName=v('mrn-product-name'),netWeight=parseFloat(v('mrn-net-weight')),um=v('mrn-um'),returnerName=v('mrn-returner-name'),createdBy=v('mrn-created-by'),empNo=v('mrn-emp-no'),remarks=v('mrn-remarks');
+  if(!mrnNo||!dateIn||!timeIn||!vehicleNo||!productName||isNaN(netWeight)||!um||!returnerName||!createdBy||!empNo){toast('⚠️ Please fill all required fields','#b91c1c');return;}
+  let now=new Date();
+  mrnData.unshift({id:Date.now(),mrnNo,dateIn,dateOut,timeIn,timeOut,vehicleNo,productName,netWeight,um,returnerName,createdBy,empNo,remarks,savedAt:now.toISOString(),createdDate:now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),createdTime:now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});
+  mrnSave();
+  // Only clear material fields, keep header for next material
+  ['mrn-product-name','mrn-net-weight','mrn-um','mrn-remarks'].forEach(id=>document.getElementById(id).value='');
+  const sameCount=mrnData.filter(e=>e.mrnNo&&e.mrnNo.trim().toLowerCase()===mrnNo.trim().toLowerCase()).length;
+  document.getElementById('mrn-autofill-msg').textContent=`MRN No. "${mrnNo}" — ${sameCount} entr${sameCount>1?'ies':'y'} saved, add more material or press "New Entry"`;
+  document.getElementById('mrn-autofill-banner').classList.add('show');
+  mrnLockHeader(true);
+  toast('✅ MRN Saved! Add more material or press New Entry','#1a7a3a');
+  renderMrnStats();renderMrnDash();renderMrns();
+  setTimeout(()=>document.getElementById('mrn-product-name').focus(),300);
+}
+function clearMrnForm(){
+  ['mrn-no','mrn-date-in','mrn-date-out','mrn-time-in','mrn-time-out','mrn-vehicle-no','mrn-returner-name','mrn-created-by','mrn-emp-no'].forEach(id=>{let el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('mrn-date-in').value=localISODate();
+  if(typeof mrnClearRows==='function') mrnClearRows();
+  mrnClearAutofill();
+}
+function viewMrn(id){
+  let e=mrnData.find(x=>x.id===id);if(!e)return;
+  let cd=e.createdDate?e.createdDate:(e.savedAt?new Date(e.savedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—');
+  document.getElementById('mrnModalBody').innerHTML=`
+    <div class="md"><div class="k">MRN No.</div><div class="v">${esc(e.mrnNo)}</div></div>
+    <div class="md"><div class="k">Created On</div><div class="v">${cd}</div></div>
+    <div class="md"><div class="k">Date In</div><div class="v">${fmtDate(e.dateIn)}</div></div>
+    <div class="md"><div class="k">Date Out</div><div class="v">${e.dateOut?fmtDate(e.dateOut):'—'}</div></div>
+    <div class="md"><div class="k">Time In</div><div class="v">${esc(e.timeIn)||'—'}</div></div>
+    <div class="md"><div class="k">Time Out</div><div class="v">${esc(e.timeOut)||'—'}</div></div>
+    <div class="md"><div class="k">Vehicle No.</div><div class="v">${esc(e.vehicleNo)}</div></div>
+    <div class="md"><div class="k">UM</div><div class="v">${esc(e.um)}</div></div>
+    <div class="md full"><div class="k">Product Name</div><div class="v">${esc(e.productName)}</div></div>
+    <div class="md"><div class="k">Challan Net Weight</div><div class="v">${parseFloat(e.netWeight||0).toFixed(2)} ${esc(e.um)}</div></div>
+    <div class="md"><div class="k">Scrap Returner</div><div class="v">${esc(e.returnerName)}</div></div>
+    <div class="md"><div class="k">MRN Created By</div><div class="v">${esc(e.createdBy)}</div></div>
+    <div class="md"><div class="k">Created By Emp. No.</div><div class="v">${esc(e.empNo)||'—'}</div></div>
+    <div class="md full"><div class="k">Remarks</div><div class="v">${esc(e.remarks)||'—'}</div></div>`;
+  document.getElementById('mrnModalBg').classList.add('open');
+}
+function closeMrnModal(){document.getElementById('mrnModalBg').classList.remove('open');}
+function delMrn(id){pendingDeleteId=id;deleteMode='mrn';document.getElementById('pwdInput').value='';document.getElementById('pwdErr').innerHTML='';document.getElementById('pwdModal').classList.add('open');}
+function delMrnGroup(mrnNo){pendingDeleteGroupKey=mrnNo;deleteMode='mrn-group';document.getElementById('pwdInput').value='';document.getElementById('pwdErr').innerHTML='';document.getElementById('pwdModal').classList.add('open');setTimeout(()=>document.getElementById('pwdInput').focus(),100);}
+/* resetAllData removed — button removed from UI */
+function clearMrnDateSearch(){document.getElementById('mrnSearchDateFrom').value='';document.getElementById('mrnSearchDateTo').value='';renderMrns();}
+function showMrnSubTab(id){
+  document.querySelectorAll('#mrnModule .sub-page').forEach(p=>p.style.display='none');
+  document.querySelectorAll('#mrnModule .sub-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).style.display='block';
+  let idx=(id==='mrn-dash'?0:(id==='mrn-add'?1:2));
+  document.querySelectorAll('#mrnModule .sub-tab')[idx].classList.add('active');
+  if(id==='mrn-dash'){renderMrnStats();renderMrnDash();}
+  if(id==='mrn-records')renderMrns();
+}
+function exportMrnCSV(){
+  if(!mrnData.length){toast('No data to export','#b45309');return;}
+  let h=['S.No','MRN No.','Date In','Date Out','Time In','Time Out','Vehicle No.','Product Name','Challan Net Weight','UM','Scrap Returner Name','MRN Created By','Remarks','Entry Saved At'];
+  let rows=mrnData.map((e,i)=>[i+1,e.mrnNo,e.dateIn,e.dateOut||'',e.timeIn,e.timeOut||'',e.vehicleNo,'"'+e.productName+'"',e.netWeight,e.um,e.returnerName,e.createdBy,'"'+(e.remarks||'')+'"',(e.createdDate?e.createdDate:(e.savedAt?new Date(e.savedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—'))]);
+  let csv=[h,...rows].map(r=>r.join(',')).join('\n');
+  let a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('\uFEFF'+csv);a.download=`MRN_EMD_${localISODate()}.csv`;a.click();toast('CSV Exported ✅');
+}
+function printMrnForm(){
+  let f={mrnNo:document.getElementById('mrn-no').value,dateIn:document.getElementById('mrn-date-in').value,dateOut:document.getElementById('mrn-date-out').value,timeIn:document.getElementById('mrn-time-in').value,timeOut:document.getElementById('mrn-time-out').value,vehicleNo:document.getElementById('mrn-vehicle-no').value,returnerName:document.getElementById('mrn-returner-name').value,createdBy:document.getElementById('mrn-created-by').value,empNo:document.getElementById('mrn-emp-no').value};
+  // Pull the actual material rows from the multi-row table
+  f.items = (typeof mrnCollectRows==='function') ? mrnCollectRows() : [];
+  if(!f.mrnNo){toast('⚠️ Please enter MRN No. before printing','#b91c1c');return;}
+  if(!f.items || f.items.length===0){toast('⚠️ Add at least one material row before printing','#b91c1c');return;}
+  openMrnPrintWindow(f);
+}
+function printSingleMrn(id){
+  let e=mrnData.find(x=>x.id===id);if(!e)return;
+  openMrnPrintWindow({mrnNo:e.mrnNo,dateIn:e.dateIn,dateOut:e.dateOut||'',timeIn:e.timeIn,timeOut:e.timeOut||'',vehicleNo:e.vehicleNo,returnerName:e.returnerName,createdBy:e.createdBy,empNo:e.empNo||'',items:[{productName:e.productName,netWeight:e.netWeight,um:e.um,remarks:e.remarks||''}]});
+}
+function openMrnPrintWindow(f){
+  function fmtD(d){if(!d)return '—';let [y,m,day]=d.split('-');return `${day}/${m}/${y}`;}
+  function fmtT(t){if(!t)return '—';return t;}
+  const items = f.items || [];
+  const itemRows = items.length ? items.map((it,i)=>`<tr>
+      <td>${i+1}</td>
+      <td>${fmt(it.productName)}</td>
+      <td style="text-align:center;font-weight:700;color:#0369a1">${parseFloat(it.netWeight||0).toFixed(2)}</td>
+      <td style="text-align:center;font-weight:700">${fmt(it.um)}</td>
+      <td>${fmt(it.remarks)}</td>
+    </tr>`).join('') : `<tr><td colspan="5" style="text-align:center;color:#94a3b8">No material rows added yet</td></tr>`;
+  const pw=window.open('','_blank','width=950,height=700');
+  pw.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>MRN – NTPC FGUTPP</title>
+  <style>${printBaseStyles()}
+  .mrn-stamp{border:3px solid #003b7a;border-radius:10px;padding:10px 18px;text-align:center;display:inline-block;min-width:180px;}
+  .mrn-stamp .ms-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;}
+  .mrn-stamp .ms-val{font-family:'Barlow Condensed',Arial,sans-serif;font-size:22px;font-weight:900;color:#003b7a;letter-spacing:1px;}
+  </style></head><body>
+  ${ntpcPrintHeader('MATERIAL RETURN NOTE (EMD) — SCRAP RETURN REGISTER')}
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="font-family:'Barlow Condensed',Arial,sans-serif;font-size:18px;font-weight:800;color:#003b7a;border-left:4px solid #c8920a;padding:6px 14px;background:linear-gradient(90deg,#eff6ff,transparent);">♻️ MATERIAL RETURN NOTE (EMD)</div>
+    <div class="mrn-stamp"><div class="ms-lbl">MRN No.</div><div class="ms-val">${esc(f.mrnNo)||'—'}</div></div>
+  </div>
+  <div class="sec">📋 Gate / Movement Details</div>
+  <div class="fg c4" style="margin-bottom:10px;">
+    <div class="fb"><div class="fl">Date In *</div><div class="fv">${fmtD(f.dateIn)}</div></div>
+    <div class="fb"><div class="fl">Date Out</div><div class="fv">${fmtD(f.dateOut)}</div></div>
+    <div class="fb"><div class="fl">Time In *</div><div class="fv">${fmtT(f.timeIn)}</div></div>
+    <div class="fb"><div class="fl">Time Out</div><div class="fv">${fmtT(f.timeOut)}</div></div>
+  </div>
+  <div class="sec">🚛 Vehicle Details</div>
+  <div class="fg c3" style="margin-bottom:10px;">
+    <div class="fb span2"><div class="fl">Vehicle No. *</div><div class="fv" style="font-size:15px;font-weight:800;color:#003b7a">${fmt(f.vehicleNo)}</div></div>
+    <div class="fb"><div class="fl">Scrap Returner Name *</div><div class="fv">${fmt(f.returnerName)}</div></div>
+  </div>
+  <div class="sec">♻️ Material Details (${items.length} item${items.length!==1?'s':''})</div>
+  <table style="margin-bottom:12px;">
+    <thead><tr><th>#</th><th>Product Name *</th><th>Net Wt (Kg) *</th><th>UM *</th><th>Remarks</th></tr></thead>
+    <tbody>${itemRows}</tbody>
+  </table>
+  <table style="margin-bottom:12px;">
+    <thead><tr><th>MRN Created By</th><th>Emp. No.</th></tr></thead>
+    <tbody><tr>
+      <td style="font-weight:700">${fmt(f.createdBy)}</td>
+      <td style="font-weight:700;color:#0056b3">${fmt(f.empNo)}</td>
+    </tr></tbody>
+  </table>
+  <div class="sig" style="margin-top:28px;">
+    <div class="sig-b"><div style="height:40px"></div><div class="sig-l">Scrap Returner Signature</div></div>
+    <div class="sig-b"><div style="height:40px"></div><div class="sig-l">Store / Gate Officer</div></div>
+    <div class="sig-b"><div style="height:40px"></div><div class="sig-l">Store In-charge</div></div>
+  </div>
+  <div class="pf"><span>NTPC FGUTPP — Material Return Note (EMD) | Unchahar – 229406, Raebareli (U.P.)</span><span>Generated: ${new Date().toLocaleString('en-IN')}</span></div>
+  <script>window.onload=function(){window.print();};<\/script>
+  </body></html>`);
+  pw.document.close();
+}
+function printMrnRecords(){
+  if(!mrnData.length){toast('No records to print','#b45309');return;}
+  const pw=window.open('','_blank','width=1200,height=700');
+  let sno=1;
+  let rows=mrnData.map(e=>{
+    return `<tr>
+      <td>${sno++}</td>
+      <td><b>${esc(e.mrnNo)}</b></td>
+      <td>${fmtDate(e.dateIn)}</td>
+      <td>${e.dateOut?fmtDate(e.dateOut):'—'}</td>
+      <td>${esc(e.timeIn)||'—'}</td>
+      <td>${esc(e.timeOut)||'—'}</td>
+      <td><b>${esc(e.vehicleNo)}</b></td>
+      <td>${esc(e.productName)}</td>
+      <td style="text-align:center;font-weight:700;color:#0369a1">${parseFloat(e.netWeight||0).toFixed(2)}</td>
+      <td>${esc(e.um)}</td>
+      <td>${esc(e.returnerName)}</td>
+      <td>${esc(e.createdBy)}</td>
+      <td>${esc(e.remarks)||'—'}</td>
+    </tr>`;
+  }).join('');
+  pw.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>MRN Records – NTPC FGUTPP</title>
+  <style>${printBaseStyles()}</style></head><body>
+  ${ntpcPrintHeader('MATERIAL RETURN NOTE (EMD) — RECORDS REGISTER')}
+  <div style="font-family:'Barlow Condensed',Arial,sans-serif;font-size:18px;font-weight:800;color:#003b7a;border-left:4px solid #c8920a;padding:6px 14px;margin-bottom:14px;background:linear-gradient(90deg,#eff6ff,transparent);">
+    ♻️ ALL MRN RECORDS (${mrnData.length} Total Entries)
+  </div>
+  <table>
+    <thead><tr><th>S.No</th><th>MRN No.</th><th>Date In</th><th>Date Out</th><th>Time In</th><th>Time Out</th><th>Vehicle No.</th><th>Product Name</th><th>Net Wt (Kg)</th><th>UM</th><th>Scrap Returner</th><th>MRN Created By</th><th>Remarks</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="sig" style="margin-top:24px;">
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Prepared By</div></div>
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Gate Officer</div></div>
+    <div class="sig-b"><div style="height:36px"></div><div class="sig-l">Store In-charge</div></div>
+  </div>
+  <div class="pf"><span>NTPC FGUTPP — Material Return Note (EMD) Register | Unchahar – 229406, Raebareli (U.P.)</span><span>Page 1 | Generated: ${new Date().toLocaleString('en-IN')}</span></div>
+  <script>window.onload=function(){window.print();};<\/script>
+  </body></html>`);
+  pw.document.close();
+}
+// ==================== EDIT FUNCTIONS ====================
+
+// --- RECEIPT EDIT ---
+function editReceipt(id){
+  let e=receipts.find(x=>x.id===id);if(!e)return;
+  document.getElementById('edit-rec-id').value=id;
+  document.getElementById('edit-rec-created').value=e.created||'';
+  document.getElementById('edit-rec-emp-no').value=e.empNo||'';
+  document.getElementById('edit-rec-date').value=e.date||'';
+  document.getElementById('edit-rec-mrn').value=e.mrn||'';
+  document.getElementById('edit-rec-code').value=e.code||'';
+  document.getElementById('edit-rec-desc').value=e.desc||'';
+  document.getElementById('edit-rec-unit').value=e.unit||'';
+  document.getElementById('edit-rec-qty-res').value=e.qtyRes||0;
+  document.getElementById('edit-rec-qty-iss').value=e.qtyIss||0;
+  document.getElementById('edit-rec-recby').value=e.recby||'';
+  document.getElementById('edit-rec-remarks').value=e.remarks||'';
+  document.getElementById('editReceiptModalBg').classList.add('open');
+}
+function closeEditReceiptModal(){document.getElementById('editReceiptModalBg').classList.remove('open');}
+function saveEditReceipt(){
+  let id=parseInt(document.getElementById('edit-rec-id').value);
+  let idx=receipts.findIndex(x=>x.id===id);if(idx===-1)return;
+  let created=document.getElementById('edit-rec-created').value.trim();
+  let empNo=document.getElementById('edit-rec-emp-no').value.trim();
+  let date=document.getElementById('edit-rec-date').value;
+  let mrn=document.getElementById('edit-rec-mrn').value.trim();
+  let code=document.getElementById('edit-rec-code').value.trim();
+  let desc=document.getElementById('edit-rec-desc').value.trim();
+  let unit=document.getElementById('edit-rec-unit').value.trim();
+  let qtyRes=parseFloat(document.getElementById('edit-rec-qty-res').value);
+  let qtyIss=parseFloat(document.getElementById('edit-rec-qty-iss').value);
+  let recby=document.getElementById('edit-rec-recby').value.trim();
+  let remarks=document.getElementById('edit-rec-remarks').value.trim();
+  if(!created||!empNo||!date||!mrn||!code||!desc||!unit||isNaN(qtyRes)||isNaN(qtyIss)||!recby){toast('⚠️ Fill all required fields','#b91c1c');return;}
+  receipts[idx]={...receipts[idx],created,empNo,date,mrn,code,desc,unit,qtyRes,qtyIss,recby,remarks};
+  saveReceipts();closeEditReceiptModal();toast('✅ Receipt updated!');renderReceiptStats();renderReceiptDash();renderReceipts();
+  if(gsheetsConfigured()){syncFullSheet('Receipts',receipts);}
+}
+
+// --- INSPECTION EDIT ---
+function editInsCalcRej(){
+  let r=parseFloat(document.getElementById('edit-ins-qty-recv').value)||0;
+  let a=parseFloat(document.getElementById('edit-ins-qty-acc').value)||0;
+  document.getElementById('edit-ins-qty-rej').value=Math.max(0,r-a);
+}
+function editInspection(id){
+  let e=insData.find(x=>x.id===id);if(!e)return;
+  document.getElementById('edit-ins-id').value=id;
+  document.getElementById('edit-ins-posting-date').value=e.postingDate||'';
+  document.getElementById('edit-ins-po-no').value=e.poNo||'';
+  document.getElementById('edit-ins-invoice-no').value=e.invoiceNo||'';
+  document.getElementById('edit-ins-ibd-no').value=e.ibdNo||'';
+  document.getElementById('edit-ins-vendor-code').value=e.vendorCode||'';
+  document.getElementById('edit-ins-vendor-name').value=e.vendorName||'';
+  document.getElementById('edit-ins-code').value=e.code||'';
+  document.getElementById('edit-ins-desc').value=e.desc||'';
+  document.getElementById('edit-ins-um').value=e.um||'';
+  document.getElementById('edit-ins-disp-qty').value=e.dispQty||0;
+  document.getElementById('edit-ins-qty-recv').value=e.qtyRecv||0;
+  document.getElementById('edit-ins-qty-acc').value=e.qtyAcc||0;
+  document.getElementById('edit-ins-qty-rej').value=e.qtyRej||0;
+  document.getElementById('edit-ins-inspector').value=e.inspector||'';
+  document.getElementById('edit-ins-emp-no').value=e.empNo||'';
+  document.getElementById('edit-ins-date').value=e.date||'';
+  document.getElementById('edit-ins-result').value=e.result||'';
+  document.getElementById('edit-ins-remarks').value=e.remarks||'';
+  document.getElementById('editInsModalBg').classList.add('open');
+}
+function closeEditInsModal(){document.getElementById('editInsModalBg').classList.remove('open');}
+function saveEditInspection(){
+  let id=parseInt(document.getElementById('edit-ins-id').value);
+  let idx=insData.findIndex(x=>x.id===id);if(idx===-1)return;
+  let pdate=document.getElementById('edit-ins-posting-date').value;
+  let po=document.getElementById('edit-ins-po-no').value.trim();
+  let code=document.getElementById('edit-ins-code').value.trim();
+  let desc=document.getElementById('edit-ins-desc').value.trim();
+  let um=document.getElementById('edit-ins-um').value.trim();
+  let qrec=parseFloat(document.getElementById('edit-ins-qty-recv').value);
+  let qacc=parseFloat(document.getElementById('edit-ins-qty-acc').value);
+  let res=document.getElementById('edit-ins-result').value;
+  let insp=document.getElementById('edit-ins-inspector').value.trim();
+  let empNo=document.getElementById('edit-ins-emp-no').value.trim();
+  let idate=document.getElementById('edit-ins-date').value;
+  if(!pdate||!po||!code||!desc||!um||isNaN(qrec)||isNaN(qacc)||!res||!insp||!empNo||!idate){toast('⚠️ Fill all required fields','#b91c1c');return;}
+  insData[idx]={...insData[idx],postingDate:pdate,poNo:po,invoiceNo:document.getElementById('edit-ins-invoice-no').value.trim(),ibdNo:document.getElementById('edit-ins-ibd-no').value.trim(),vendorCode:document.getElementById('edit-ins-vendor-code').value.trim(),vendorName:document.getElementById('edit-ins-vendor-name').value.trim(),code,desc,um,dispQty:parseFloat(document.getElementById('edit-ins-disp-qty').value)||0,qtyRecv:qrec,qtyAcc:qacc,qtyRej:Math.max(0,qrec-qacc),inspector:insp,empNo,date:idate,result:res,remarks:document.getElementById('edit-ins-remarks').value.trim()};
+  insSave();closeEditInsModal();toast('✅ Inspection updated!');renderInspectionStats();renderInsDash();renderInspections();
+  if(gsheetsConfigured()){syncFullSheet('Inspections',insData);}
+}
+
+// --- MRN EDIT ---
+function editMrn(id){
+  let e=mrnData.find(x=>x.id===id);if(!e)return;
+  document.getElementById('edit-mrn-id').value=id;
+  document.getElementById('edit-mrn-no').value=e.mrnNo||'';
+  document.getElementById('edit-mrn-date-in').value=e.dateIn||'';
+  document.getElementById('edit-mrn-date-out').value=e.dateOut||'';
+  document.getElementById('edit-mrn-time-in').value=e.timeIn||'';
+  document.getElementById('edit-mrn-time-out').value=e.timeOut||'';
+  document.getElementById('edit-mrn-vehicle-no').value=e.vehicleNo||'';
+  document.getElementById('edit-mrn-product-name').value=e.productName||'';
+  document.getElementById('edit-mrn-net-weight').value=e.netWeight||0;
+  document.getElementById('edit-mrn-um').value=e.um||'';
+  document.getElementById('edit-mrn-returner-name').value=e.returnerName||'';
+  document.getElementById('edit-mrn-created-by').value=e.createdBy||'';
+  document.getElementById('edit-mrn-emp-no').value=e.empNo||'';
+  document.getElementById('edit-mrn-remarks').value=e.remarks||'';
+  document.getElementById('editMrnModalBg').classList.add('open');
+}
+function closeEditMrnModal(){document.getElementById('editMrnModalBg').classList.remove('open');}
+function saveEditMrn(){
+  let id=parseInt(document.getElementById('edit-mrn-id').value);
+  let idx=mrnData.findIndex(x=>x.id===id);if(idx===-1)return;
+  let mrnNo=document.getElementById('edit-mrn-no').value.trim();
+  let dateIn=document.getElementById('edit-mrn-date-in').value;
+  let timeIn=document.getElementById('edit-mrn-time-in').value;
+  let vehicleNo=document.getElementById('edit-mrn-vehicle-no').value.trim();
+  let productName=document.getElementById('edit-mrn-product-name').value.trim();
+  let netWeight=parseFloat(document.getElementById('edit-mrn-net-weight').value);
+  let um=document.getElementById('edit-mrn-um').value.trim();
+  let returnerName=document.getElementById('edit-mrn-returner-name').value.trim();
+  let createdBy=document.getElementById('edit-mrn-created-by').value.trim();
+  let empNo=document.getElementById('edit-mrn-emp-no').value.trim();
+  if(!mrnNo||!dateIn||!timeIn||!vehicleNo||!productName||isNaN(netWeight)||!um||!returnerName||!createdBy||!empNo){toast('⚠️ Fill all required fields','#b91c1c');return;}
+  mrnData[idx]={...mrnData[idx],mrnNo,dateIn,dateOut:document.getElementById('edit-mrn-date-out').value,timeIn,timeOut:document.getElementById('edit-mrn-time-out').value,vehicleNo,productName,netWeight,um,returnerName,createdBy,empNo,remarks:document.getElementById('edit-mrn-remarks').value.trim()};
+  mrnSave();closeEditMrnModal();toast('✅ MRN updated!','#1a7a3a');renderMrnStats();renderMrnDash();renderMrns();
+  if(gsheetsConfigured()){syncFullSheet('MRN',mrnData);}
+}
+
+// ===== INTERACTIVE FLOWER INTRO =====
+(function(){
+  const fi=document.getElementById('fi');
+  const cv=document.getElementById('fi-cv');
+  const ctx=cv.getContext('2d');
+  let W,H,frame=0,lastSpawn=0;
+  const flowers=[],parts=[],stars=[];
+  const mouse={x:0,y:0,down:false};
+
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+
+  const PAL=[
+    {p:'#ff6eb4',c:'#ffe566',g:'rgba(255,110,180,0.4)'},
+    {p:'#a78bfa',c:'#fde68a',g:'rgba(167,139,250,0.4)'},
+    {p:'#34d399',c:'#fef3c7',g:'rgba(52,211,153,0.4)'},
+    {p:'#fb923c',c:'#fff7ed',g:'rgba(249,115,22,0.4)'},
+    {p:'#60a5fa',c:'#e0f2fe',g:'rgba(96,165,250,0.4)'},
+    {p:'#f472b6',c:'#fbbf24',g:'rgba(244,114,182,0.4)'},
+    {p:'#86efac',c:'#ffffff',g:'rgba(134,239,172,0.4)'},
+    {p:'#fbbf24',c:'#fffbeb',g:'rgba(251,191,36,0.4)'},
+    {p:'#c084fc',c:'#f0abfc',g:'rgba(192,132,252,0.4)'},
+    {p:'#67e8f9',c:'#ffffff',g:'rgba(103,232,249,0.4)'},
+  ];
+
+  // Stars
+  for(let i=0;i<130;i++) stars.push({
+    x:Math.random()*4000,y:Math.random()*3000,
+    r:Math.random()*1.5,ph:Math.random()*Math.PI*2,
+    sp:0.018+Math.random()*0.03
+  });
+
+  class Particle{
+    constructor(x,y,col){
+      this.x=x;this.y=y;this.col=col;
+      this.vx=(Math.random()-.5)*6;this.vy=-Math.random()*5-1;
+      this.life=0;this.max=20+Math.random()*25;this.r=2+Math.random()*4;
+    }
+    tick(){this.x+=this.vx;this.y+=this.vy;this.vy+=0.12;this.life++;return this.life<this.max;}
+    draw(){
+      ctx.globalAlpha=(1-this.life/this.max)*.9;
+      ctx.fillStyle=this.col;ctx.beginPath();
+      ctx.arc(this.x,this.y,this.r*(1-this.life/this.max),0,Math.PI*2);ctx.fill();
+    }
+  }
+
+  class Flower{
+    constructor(x,y){
+      this.x=x;this.y=y;
+      this.pal=PAL[Math.floor(Math.random()*PAL.length)];
+      this.maxSz=22+Math.random()*38;this.sz=0;
+      this.nPetals=5+Math.floor(Math.random()*5);
+      this.ang=Math.random()*Math.PI*2;
+      this.spin=(Math.random()-.5)*0.028;
+      this.life=0;this.maxLife=260+Math.random()*340;
+      this.stemLen=48+Math.random()*72;
+      this.swayPh=Math.random()*Math.PI*2;
+      for(let i=0;i<16;i++) parts.push(new Particle(x,y,this.pal.p));
+    }
+    tick(){
+      this.life++;this.ang+=this.spin;
+      const t=this.life/this.maxLife;
+      if(t<0.12) this.sz=this.maxSz*(t/0.12);
+      else if(t>0.8) this.sz=this.maxSz*(1-(t-0.8)/0.2);
+      else this.sz=this.maxSz;
+      return this.life<this.maxLife;
+    }
+    draw(){
+      const bloom=this.sz/this.maxSz;
+      const sw=Math.sin(frame*0.02+this.swayPh)*5;
+      const hx=this.x+sw, hy=this.y;
+      // stem
+      ctx.globalAlpha=bloom*.9;ctx.strokeStyle='#4ade80';ctx.lineWidth=1.8*bloom;
+      ctx.beginPath();ctx.moveTo(this.x,this.y+this.stemLen);
+      ctx.quadraticCurveTo(this.x+sw*.4,this.y+this.stemLen*.4,hx,hy);ctx.stroke();
+      if(this.sz<2) return;
+      ctx.save();ctx.translate(hx,hy);ctx.rotate(this.ang);
+      ctx.globalAlpha=bloom;
+      ctx.shadowBlur=22*bloom;ctx.shadowColor=this.pal.g;
+      // petals
+      for(let i=0;i<this.nPetals;i++){
+        ctx.save();ctx.rotate((i/this.nPetals)*Math.PI*2);
+        const g=ctx.createRadialGradient(0,-this.sz*.5,0,0,-this.sz*.5,this.sz*.72);
+        g.addColorStop(0,this.pal.c);g.addColorStop(1,this.pal.p);
+        ctx.fillStyle=g;ctx.beginPath();
+        ctx.ellipse(0,-this.sz*.62,this.sz*.33,this.sz*.62,0,0,Math.PI*2);
+        ctx.fill();ctx.restore();
+      }
+      // center
+      const cg=ctx.createRadialGradient(0,0,0,0,0,this.sz*.32);
+      cg.addColorStop(0,'#fff');cg.addColorStop(.5,this.pal.c);cg.addColorStop(1,this.pal.p);
+      ctx.fillStyle=cg;ctx.shadowBlur=12;
+      ctx.beginPath();ctx.arc(0,0,this.sz*.32,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function spawn(x,y){
+    if(flowers.length>70) flowers.splice(0,10);
+    flowers.push(new Flower(x,y));
+  }
+
+  function pos(e,touch){
+    const r=fi.getBoundingClientRect();
+    const src=touch||e;
+    return{x:(src.clientX-r.left)*(W/r.width),y:(src.clientY-r.top)*(H/r.height)};
+  }
+
+  fi.addEventListener('mousedown',e=>{if(e.target===document.getElementById('fi-btn'))return;const p=pos(e);mouse.down=true;spawn(p.x,p.y);});
+  fi.addEventListener('mouseup',()=>mouse.down=false);
+  fi.addEventListener('mousemove',e=>{const p=pos(e);mouse.x=p.x;mouse.y=p.y;if(mouse.down&&frame-lastSpawn>7){lastSpawn=frame;spawn(p.x,p.y);}});
+  fi.addEventListener('touchstart',e=>{e.preventDefault();const r=fi.getBoundingClientRect();[...e.touches].forEach(t=>spawn((t.clientX-r.left)*(W/r.width),(t.clientY-r.top)*(H/r.height)));},{passive:false});
+  fi.addEventListener('touchmove',e=>{e.preventDefault();if(frame-lastSpawn<6)return;lastSpawn=frame;const r=fi.getBoundingClientRect();[...e.touches].forEach(t=>spawn((t.clientX-r.left)*(W/r.width),(t.clientY-r.top)*(H/r.height)));},{passive:false});
+
+  function loop(){
+    frame++;
+    // bg
+    const bg=ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,'#000810');bg.addColorStop(.6,'#001428');bg.addColorStop(1,'#000c18');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    // stars
+    stars.forEach(s=>{
+      ctx.globalAlpha=.28+.38*Math.sin(frame*s.sp+s.ph);
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2);ctx.fill();
+    });
+    ctx.globalAlpha=1;ctx.shadowBlur=0;
+    // moon
+    const mg=ctx.createRadialGradient(W-110,75,0,W-110,75,52);
+    mg.addColorStop(0,'#fffde0');mg.addColorStop(.55,'#fde68a');mg.addColorStop(1,'transparent');
+    ctx.fillStyle=mg;ctx.globalAlpha=.85;ctx.beginPath();ctx.arc(W-110,75,52,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;ctx.shadowBlur=0;
+    // ground
+    const gg=ctx.createLinearGradient(0,H-100,0,H);
+    gg.addColorStop(0,'#0a2a16');gg.addColorStop(1,'#030d08');
+    ctx.fillStyle=gg;
+    ctx.beginPath();ctx.moveTo(0,H-70);
+    ctx.bezierCurveTo(W*.3,H-105,W*.6,H-85,W,H-78);
+    ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();
+    // particles
+    for(let i=parts.length-1;i>=0;i--){if(!parts[i].tick()){parts.splice(i,1);continue;}parts[i].draw();}
+    ctx.globalAlpha=1;ctx.shadowBlur=0;
+    // flowers
+    for(let i=flowers.length-1;i>=0;i--){if(!flowers[i].tick()){flowers.splice(i,1);continue;}flowers[i].draw();}
+    ctx.globalAlpha=1;ctx.shadowBlur=0;
+    requestAnimationFrame(loop);
+  }
+
+  // Auto-spawn a few starter flowers
+  setTimeout(()=>spawn(W*.18,H*.55),300);
+  setTimeout(()=>spawn(W*.5,H*.45),600);
+  setTimeout(()=>spawn(W*.82,H*.58),900);
+  setTimeout(()=>spawn(W*.35,H*.65),1200);
+  setTimeout(()=>spawn(W*.68,H*.5),1400);
+
+  loop();
+})();
+
+function fiClose(){
+  document.getElementById('fi').classList.add('fi-hide');
+  setTimeout(()=>{const el=document.getElementById('fi');el.style.display='none';},950);
+}
+
+// ==================== GOOGLE SHEETS SYNC ====================
+// DEFAULT Script URL — permanently saved, no setup needed
+const DEFAULT_GSHEET_URL = 'https://script.google.com/macros/s/AKfycbxpU8FdOT14XmoZzw9vB4O6po94bLfT2Dn2ZxYWCOwi7pG-Mq0j8ioLvRMhjyZphotq/exec';
+function getGSheetURL() { return localStorage.getItem('gsheet_url') || DEFAULT_GSHEET_URL; }
+function gsheetsConfigured() { return true; } // Always configured — default URL set
+
+// ---- DELETE TOMBSTONES ----
+// The Google Sheet may not always confirm a delete/replace (the POST below
+// uses mode:'no-cors', so a failure on the Apps Script side is invisible to
+// this page). Without this safeguard, the next auto-sync (loadFromGSheets,
+// which runs on every page load) would re-download the old, still-present
+// row from the Sheet and silently put a "deleted" record right back into
+// the table. We remember every locally-deleted ID and always filter it back
+// out of anything pulled down from the Sheet, so a deletion sticks even if
+// the Sheet itself never finished updating.
+let deletedIds = {
+  receipt: JSON.parse(localStorage.getItem('ntpc_deleted_receipts')||'[]'),
+  inspection: JSON.parse(localStorage.getItem('ntpc_deleted_inspections')||'[]'),
+  mrn: JSON.parse(localStorage.getItem('ntpc_deleted_mrn')||'[]')
+};
+function tombstone(type, ids){
+  if(!ids || !ids.length) return;
+  const key = type==='receipt'?'ntpc_deleted_receipts':type==='inspection'?'ntpc_deleted_inspections':'ntpc_deleted_mrn';
+  const set = new Set(deletedIds[type].map(String));
+  ids.forEach(id=>set.add(String(id)));
+  deletedIds[type] = Array.from(set);
+  localStorage.setItem(key, JSON.stringify(deletedIds[type]));
+}
+
+// Generic POST to Google Apps Script
+async function gsheetPost(payload) {
+  const GSHEET_URL = getGSheetURL();
+  if (!GSHEET_URL) return null;
+  try {
+    const res = await fetch(GSHEET_URL, {
+      method: 'POST',
+      // Use a CORS-readable simple request. application/json triggers a
+      // browser preflight that Google Apps Script often rejects, and no-cors
+      // hides failures, so delete looked successful even when Sheet was stale.
+      mode: 'cors',
+      cache: 'no-store',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const txt = await res.text().catch(()=>'');
+      console.error('GSheet POST failed:', res.status, txt);
+      return null;
+    }
+    return true;
+  } catch(e) { console.error('GSheet POST error:', e); return null; }
+}
+
+// GET from Google Apps Script
+async function gsheetGet(sheet) {
+  const GSHEET_URL = getGSheetURL();
+  if (!GSHEET_URL) return null;
+  try {
+    // cache-bust so the browser never serves a stale list after a delete
+    const url = GSHEET_URL + '?sheet=' + encodeURIComponent(sheet) + '&t=' + Date.now();
+    const res = await fetch(url, { mode: 'cors', cache: 'no-store' });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data;
+  } catch(e) { console.error('GSheet GET error:', e); return null; }
+}
+
+// Send single row to sheet
+async function syncToSheet(sheet, record) {
+  return gsheetPost({ action: 'append', sheet, record });
+}
+
+// Send delete to sheet
+async function syncDeleteFromSheet(sheet, id) {
+  return gsheetPost({ action: 'delete', sheet, id });
+}
+
+// Full replace of all data in a sheet
+async function syncFullSheet(sheet, records) {
+  return gsheetPost({ action: 'replaceAll', sheet, records });
+}
+
+function wait(ms){ return new Promise(resolve=>setTimeout(resolve, ms)); }
+
+async function verifySheetDelete(sheet, ids) {
+  const idSet = new Set((ids||[]).map(String).filter(Boolean));
+  if (!idSet.size) return true;
+  await wait(900);
+  const fresh = await gsheetGet(sheet);
+  if (!Array.isArray(fresh)) return false;
+  return !fresh.some(row => idSet.has(String(row && row.id)));
+}
+
+async function syncSheetAfterDelete(sheet, records, deletedRecordIds) {
+  const replaced = await syncFullSheet(sheet, records);
+  if (!replaced) return false;
+
+  // Double-check the Sheet. If a stale row is still there, remove it by ID too.
+  if (await verifySheetDelete(sheet, deletedRecordIds)) return true;
+  for (const id of (deletedRecordIds||[])) await syncDeleteFromSheet(sheet, id);
+  return verifySheetDelete(sheet, deletedRecordIds);
+}
+
+// Load all data from all sheets
+async function loadFromGSheets() {
+  if (!getGSheetURL()) return;
+  showSyncStatus('🔄 Syncing…', '#f5c842');
+  try {
+    const [rData, iData, mData] = await Promise.all([
+      gsheetGet('Receipts'),
+      gsheetGet('Inspections'),
+      gsheetGet('MRN')
+    ]);
+    // Accept empty arrays too — a cleared sheet should clear local data.
+    // Only skip when the response is null/undefined (network failure).
+    // IMPORTANT: Always re-read tombstones fresh from localStorage before filtering
+    // so that deletes done in this session are never re-imported from the Sheet.
+    if (rData && Array.isArray(rData)) {
+      const freshDeleted = JSON.parse(localStorage.getItem('ntpc_deleted_receipts')||'[]');
+      deletedIds.receipt = freshDeleted;
+      const delSet = new Set(freshDeleted.map(String));
+      // Normalize mrn to string — Sheet may return numbers
+      receipts = rData.filter(r => r && r.id && !delSet.has(String(r.id)))
+                      .map(r => ({...r, mrn: String(r.mrn||''), id: r.id}));
+      saveReceipts();
+    }
+    if (iData && Array.isArray(iData)) {
+      const freshDeleted = JSON.parse(localStorage.getItem('ntpc_deleted_inspections')||'[]');
+      deletedIds.inspection = freshDeleted;
+      const delSet = new Set(freshDeleted.map(String));
+      // Normalize poNo to string
+      insData = iData.filter(r => r && r.id && !delSet.has(String(r.id)))
+                     .map(r => ({...r, poNo: String(r.poNo||'')}));
+      insSave();
+    }
+    if (mData && Array.isArray(mData)) {
+      const freshDeleted = JSON.parse(localStorage.getItem('ntpc_deleted_mrn')||'[]');
+      deletedIds.mrn = freshDeleted;
+      const delSet = new Set(freshDeleted.map(String));
+      // Normalize mrnNo to string
+      mrnData = mData.filter(r => r && r.id && !delSet.has(String(r.id)))
+                     .map(r => ({...r, mrnNo: String(r.mrnNo||'')}));
+      mrnSave();
+    }
+    renderReceiptStats(); renderReceiptDash(); renderReceipts();
+    renderInspectionStats(); renderInsDash(); renderInspections();
+    renderMrnStats(); renderMrnDash(); renderMrns();
+    const anyOk = (rData && Array.isArray(rData)) || (iData && Array.isArray(iData)) || (mData && Array.isArray(mData));
+    showSyncStatus(anyOk ? '✅ Synced ' + new Date().toLocaleTimeString() : '⚠ No response from Sheet', anyOk ? '#1a7a3a' : '#b45309');
+  } catch(e) {
+    console.warn('GSheet load failed:', e.message);
+    showSyncStatus('❌ Sync failed: ' + e.message, '#b91c1c');
+  }
+}
+
+function showSyncStatus(msg, color) {
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = color || 'rgba(255,255,255,.85)';
+  el.style.display = 'inline-block';
+  clearTimeout(showSyncStatus._t);
+  // Auto-hide success messages after 4s; keep errors visible longer
+  const isError = /❌|⚠/.test(msg);
+  showSyncStatus._t = setTimeout(()=>{ el.style.display='none'; }, isError ? 8000 : 4000);
+}
+
+// Init
+tick(); setInterval(tick,1000);
+document.getElementById('rec-date').value=localISODate();
+document.getElementById('ins-date').value=localISODate();
+document.getElementById('ins-posting-date').value=localISODate();
+document.getElementById('mrn-date-in').value=localISODate();
+document.getElementById('rec-created-date-display').value=localISODate();
+if(typeof recAddRow==='function') recAddRow();
+if(typeof insAddRow==='function') insAddRow();
+if(typeof mrnAddRow==='function') mrnAddRow();
+renderReceiptStats(); renderReceiptDash(); renderReceipts();
+renderInspectionStats(); renderInsDash(); renderInspections();
+renderMrnStats(); renderMrnDash(); renderMrns();
+
+// ==================== GOOGLE SHEETS SYNC PATCHES ====================
+// Multi-row saveReceipt + GSheets sync
+window.saveReceipt = async function() {
+  let created=v('rec-created'),empNo=v('rec-emp-no'),date=v('rec-date'),mrn=v('rec-mrn'),recby=v('rec-recby'),manualCreatedDate=v('rec-created-date-display');
+  if(!created||!empNo||!date||!mrn||!recby||!manualCreatedDate){toast('⚠️ Please fill all header fields','#b91c1c');return;}
+  const items = recCollectRows();
+  if(items.length===0){toast('⚠️ Add at least one material row','#b91c1c');return;}
+  for(let i=0;i<items.length;i++){
+    const it=items[i];
+    if(!it.code||!it.desc||!it.unit||isNaN(it.qtyRes)||isNaN(it.qtyIss)){
+      toast(`⚠️ Row ${i+1}: fill all required fields`,'#b91c1c');return;
+    }
+  }
+  let now=new Date();
+  let cdObj=new Date(manualCreatedDate);
+  let createdDate=cdObj.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  const createdTime=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const newRecords=[];
+  items.forEach((it,idx)=>{
+    const rec={id:Date.now()+idx*100,created,empNo,date,mrn,code:it.code,desc:it.desc,unit:it.unit,qtyRes:it.qtyRes,qtyIss:it.qtyIss,recby,remarks:it.remarks,savedAt:now.toISOString(),createdDate:createdDate,createdTime:createdTime};
+    receipts.unshift(rec);newRecords.push(rec);
+  });
+  saveReceipts();
+  recClearRows();
+  const sameCount=receipts.filter(e=>e.mrn&&e.mrn.trim().toLowerCase()===mrn.trim().toLowerCase()).length;
+  document.getElementById('rec-autofill-msg').textContent=`Gate Pass "${mrn}" — ${sameCount} entr${sameCount>1?'ies':'y'} saved, add more material or press "New Entry"`;
+  document.getElementById('rec-autofill-banner').classList.add('show');
+  recLockHeader(true);
+  toast(`✅ ${items.length} item${items.length>1?'s':''} saved!`);
+  renderReceiptStats();renderReceiptDash();renderReceipts();
+  if(gsheetsConfigured()){
+    for(const rec of newRecords){ syncToSheet('Receipts',rec); }
+  }
+};
+
+window.saveInspection = async function() {
+  let pdate=v('ins-posting-date'),po=v('ins-po-no'),insp=v('ins-inspector'),empNo=v('ins-emp-no'),idate=v('ins-date');
+  if(!pdate||!po||!insp||!empNo||!idate){toast('⚠️ Fill the header fields (Posting Date, PO No, Inspector, Emp No, Date)','#b91c1c');return;}
+  const items = (typeof insCollectRows==='function') ? insCollectRows() : [];
+  if(items.length===0){toast('⚠️ Add at least one material row','#b91c1c');return;}
+  for(let i=0;i<items.length;i++){
+    const it=items[i];
+    if(!it.code||!it.desc||!it.um||isNaN(it.qtyRecv)||isNaN(it.qtyAcc)||!it.result){
+      toast(`⚠️ Row ${i+1}: code, desc, UM, Recv, Acc and Result are all required`,'#b91c1c');return;
+    }
+  }
+  let now=new Date();
+  const createdDate=now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  const createdTime=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const newRecords=[];
+  items.forEach((it,idx)=>{
+    const rec={id:Date.now()+idx*100,postingDate:pdate,poNo:po,invoiceNo:v('ins-invoice-no'),ibdNo:v('ins-ibd-no'),vendorCode:v('ins-vendor-code'),vendorName:v('ins-vendor-name'),code:it.code,desc:it.desc,um:it.um,dispQty:it.dispQty||0,qtyRecv:it.qtyRecv,qtyAcc:it.qtyAcc,qtyRej:Math.max(0,it.qtyRecv-it.qtyAcc),inspector:insp,empNo,date:idate,result:it.result,remarks:it.remarks,savedAt:now.toISOString(),createdDate,createdTime};
+    insData.unshift(rec);newRecords.push(rec);
+  });
+  insSave();
+  if(typeof insClearRows==='function') insClearRows();
+  const sameCount=insData.filter(e=>e.poNo&&e.poNo.trim().toLowerCase()===po.trim().toLowerCase()).length;
+  document.getElementById('ins-autofill-msg').textContent=`PO "${po}" — ${sameCount} entr${sameCount>1?'ies':'y'} saved, add more material or press "New Entry"`;
+  document.getElementById('ins-autofill-banner').classList.add('show');
+  insLockHeader(true);
+  toast(`✅ ${items.length} inspection item${items.length>1?'s':''} saved!`);
+  renderInspectionStats();renderInsDash();renderInspections();
+  if(gsheetsConfigured()){
+    for(const rec of newRecords){ syncToSheet('Inspections', rec); }
+  }
+};
+
+window.saveMrn = async function() {
+  let mrnNo=v('mrn-no'),dateIn=v('mrn-date-in'),dateOut=v('mrn-date-out'),timeIn=v('mrn-time-in'),timeOut=v('mrn-time-out'),vehicleNo=v('mrn-vehicle-no'),returnerName=v('mrn-returner-name'),createdBy=v('mrn-created-by'),empNo=v('mrn-emp-no');
+  if(!mrnNo||!dateIn||!timeIn||!vehicleNo||!returnerName||!createdBy||!empNo){toast('⚠️ Fill the header fields','#b91c1c');return;}
+  const items = (typeof mrnCollectRows==='function') ? mrnCollectRows() : [];
+  if(items.length===0){toast('⚠️ Add at least one material row','#b91c1c');return;}
+  for(let i=0;i<items.length;i++){
+    const it=items[i];
+    if(!it.productName||isNaN(it.netWeight)||!it.um){
+      toast(`⚠️ Row ${i+1}: Product Name, Net Wt and UM are required`,'#b91c1c');return;
+    }
+  }
+  let now=new Date();
+  const createdDate=now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  const createdTime=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const newRecords=[];
+  items.forEach((it,idx)=>{
+    const rec={id:Date.now()+idx*100,mrnNo,dateIn,dateOut,timeIn,timeOut,vehicleNo,productName:it.productName,netWeight:it.netWeight,um:it.um,returnerName,createdBy,empNo,remarks:it.remarks,savedAt:now.toISOString(),createdDate,createdTime};
+    mrnData.unshift(rec);newRecords.push(rec);
+  });
+  mrnSave();
+  if(typeof mrnClearRows==='function') mrnClearRows();
+  const sameCount=mrnData.filter(e=>e.mrnNo&&e.mrnNo.trim().toLowerCase()===mrnNo.trim().toLowerCase()).length;
+  document.getElementById('mrn-autofill-msg').textContent=`MRN No. "${mrnNo}" — ${sameCount} entr${sameCount>1?'ies':'y'} saved, add more material or press "New Entry"`;
+  document.getElementById('mrn-autofill-banner').classList.add('show');
+  mrnLockHeader(true);
+  toast(`✅ ${items.length} MRN item${items.length>1?'s':''} saved!`,'#1a7a3a');
+  renderMrnStats();renderMrnDash();renderMrns();
+  if(gsheetsConfigured()){
+    for(const rec of newRecords){ syncToSheet('MRN', rec); }
+  }
+};
+
+// Sync GSheet after delete as well
+window._confirmDeleteOverridden = true;
+window.confirmDelete = async function() {
+  let pwd=document.getElementById('pwdInput').value;
+  if(pwd===DELETE_PASSWORD){
+    const mode = deleteMode;
+    const rid = pendingDeleteId;
+    const insid = pendingDelInsId;
+    const gkey = pendingDeleteGroupKey;
+    let deletedRecordIds = [];
+    let sheetName = null;
+
+    // Step 1: Determine IDs to delete and update tombstones FIRST
+    if(mode==='receipt'){
+      deletedRecordIds=[rid];
+      sheetName='Receipts';
+      tombstone('receipt',deletedRecordIds);
+      receipts=receipts.filter(x=>String(x.id)!==String(rid));
+      saveReceipts();renderReceiptStats();renderReceiptDash();renderReceipts();
+      toast('✅ Receipt deleted','#1a7a3a');
+    }
+    else if(mode==='inspection'){
+      deletedRecordIds=[insid];
+      sheetName='Inspections';
+      tombstone('inspection',deletedRecordIds);
+      insData=insData.filter(x=>String(x.id)!==String(insid));
+      insSave();renderInspectionStats();renderInsDash();renderInspections();
+      toast('✅ Inspection deleted','#1a7a3a');
+    }
+    else if(mode==='mrn'){
+      deletedRecordIds=[rid];
+      sheetName='MRN';
+      tombstone('mrn',deletedRecordIds);
+      mrnData=mrnData.filter(x=>String(x.id)!==String(rid));
+      mrnSave();renderMrnStats();renderMrnDash();renderMrns();
+      toast('✅ MRN deleted','#1a7a3a');
+    }
+    else if(mode==='receipt-group'){
+      const gkeyStr=String(gkey);
+      deletedRecordIds=receipts.filter(x=>String(x.mrn||'(No MRN)')===gkeyStr).map(x=>x.id);
+      sheetName='Receipts';
+      const before=receipts.length;
+      tombstone('receipt',deletedRecordIds);
+      receipts=receipts.filter(x=>String(x.mrn||'(No MRN)')!==gkeyStr);
+      saveReceipts();renderReceiptStats();renderReceiptDash();renderReceipts();
+      toast(`🗑 Gate Pass "${gkey}" deleted (${before-receipts.length} item${(before-receipts.length)!==1?'s':''})`,'#1a7a3a');
+    }
+    else if(mode==='inspection-group'){
+      const gkeyStr2=String(gkey);
+      deletedRecordIds=insData.filter(x=>String(x.poNo||'(No PO)')===gkeyStr2).map(x=>x.id);
+      sheetName='Inspections';
+      const before=insData.length;
+      tombstone('inspection',deletedRecordIds);
+      insData=insData.filter(x=>String(x.poNo||'(No PO)')!==gkeyStr2);
+      insSave();renderInspectionStats();renderInsDash();renderInspections();
+      toast(`🗑 PO "${gkey}" deleted (${before-insData.length} item${(before-insData.length)!==1?'s':''})`,'#1a7a3a');
+    }
+    else if(mode==='mrn-group'){
+      const gkeyStr3=String(gkey);
+      deletedRecordIds=mrnData.filter(x=>String(x.mrnNo||'(No MRN)')===gkeyStr3).map(x=>x.id);
+      sheetName='MRN';
+      const before=mrnData.length;
+      tombstone('mrn',deletedRecordIds);
+      mrnData=mrnData.filter(x=>String(x.mrnNo||'(No MRN)')!==gkeyStr3);
+      mrnSave();renderMrnStats();renderMrnDash();renderMrns();
+      toast(`🗑 MRN "${gkey}" deleted (${before-mrnData.length} item${(before-mrnData.length)!==1?'s':''})`,'#1a7a3a');
+    }
+
+    cancelDelete();
+
+    // Step 2: Try to sync to Sheet (best effort — tombstone already protects local data)
+    if(gsheetsConfigured() && sheetName && deletedRecordIds.length){
+      showSyncStatus('🔄 Sheet update ho raha hai…', '#f5c842');
+      try {
+        let localData = sheetName==='Receipts' ? receipts : sheetName==='Inspections' ? insData : mrnData;
+        // First try: replaceAll (most reliable)
+        const ok = await syncFullSheet(sheetName, localData);
+        if(ok){
+          showSyncStatus('✅ Sheet updated', '#1a7a3a');
+        } else {
+          // Fallback: try individual row deletes
+          let anyOk = false;
+          for(const id of deletedRecordIds){
+            const r = await syncDeleteFromSheet(sheetName, id);
+            if(r) anyOk = true;
+          }
+          showSyncStatus(anyOk ? '✅ Sheet updated' : '⚠ Local deleted — Sheet sync baad mein hoga', anyOk ? '#1a7a3a' : '#b45309');
+        }
+      } catch(err) {
+        // Data is safe locally — tombstone ensures it won't come back from Sheet
+        showSyncStatus('⚠ Local deleted — Sheet sync baad mein hoga', '#b45309');
+      }
+    }
+  } else {
+    document.getElementById('pwdErr').innerHTML='❌ Wrong password!';
+    document.getElementById('pwdInput').value='';
+  }
+};
+
+// Auto-load from GSheets on page load (silent — no toast)
+setTimeout(loadFromGSheets, 1200);
+
+
+/* ============ AI DOCUMENT SCANNER (Gemini Vision) ============ */
+const SCAN_FIELD_MAP = {
+  rec: {
+    label: 'Material Receipt / Gate Pass',
+    multiRow: true,
+    fields: {
+      'rec-mrn': 'MRN number or Gate Pass number',
+      'rec-created': 'Created By person name',
+      'rec-emp-no': 'Employee number (e.g. E12345)',
+      'rec-created-date-display': 'Created date in YYYY-MM-DD format',
+      'rec-date': 'Receive date in YYYY-MM-DD format',
+      'rec-recby': 'Received By person name'
+    },
+    itemsKey: 'items',
+    itemFields: {
+      'code': 'Material code',
+      'desc': 'Material description',
+      'unit': 'Unit of measure (Nos, Kg, Sets, Metres)',
+      'qtyRes': 'Quantity in Reservation (number only)',
+      'qtyIss': 'Issued quantity (number only)',
+      'remarks': 'Remarks / notes for this item'
+    }
+  },
+  mrn: {
+    label: 'Material Return Note (MRN / EMD / Scrap)',
+    multiRow: true,
+    fields: {
+      'mrn-no': 'MRN number',
+      'mrn-date-in': 'Date In (YYYY-MM-DD)',
+      'mrn-date-out': 'Date Out (YYYY-MM-DD)',
+      'mrn-time-in': 'Time In (HH:MM 24hr)',
+      'mrn-time-out': 'Time Out (HH:MM 24hr)',
+      'mrn-vehicle-no': 'Vehicle number',
+      'mrn-returner-name': 'Scrap returner person name',
+      'mrn-created-by': 'MRN created by person name',
+      'mrn-emp-no': 'Employee number'
+    },
+    itemsKey: 'items',
+    itemFields: {
+      'productName': 'Product / material name',
+      'netWeight': 'Challan net weight (number only)',
+      'um': 'Unit of measure (Kg, MT, Nos, Ltrs)',
+      'remarks': 'Remarks / notes for this item'
+    }
+  },
+  ins: {
+    label: 'Material Inspection / Purchase Order / Invoice',
+    multiRow: true,
+    fields: {
+      'ins-po-no': 'Purchase Order number',
+      'ins-posting-date': 'Posting date (YYYY-MM-DD)',
+      'ins-invoice-no': 'Invoice number',
+      'ins-ibd-no': 'IBD number',
+      'ins-vendor-code': 'Vendor code',
+      'ins-vendor-name': 'Vendor / supplier name',
+      'ins-inspector': 'Inspector name',
+      'ins-emp-no': 'Inspector employee number',
+      'ins-date': 'Inspection date (YYYY-MM-DD)'
+    },
+    itemsKey: 'items',
+    itemFields: {
+      'code': 'Material code',
+      'desc': 'Material description',
+      'um': 'Unit of measure (Nos, Kg, Sets, MT)',
+      'dispQty': 'Dispatch quantity (number)',
+      'qtyRecv': 'Received quantity (number)',
+      'qtyAcc': 'Accepted quantity (number)',
+      'result': 'Inspection result — exactly one of: Pass, Fail, Partial',
+      'remarks': 'Defect or remarks for this item'
+    }
+  }
+};
+
+async function fileToBase64(file){
+  return new Promise((res, rej)=>{
+    const r = new FileReader();
+    r.onload = ()=>res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+/* ---- Gemini API Key Modal ---- */
+function _dk(){
+  const e=[107, 122, 2, 108, 76, 23, 98, 127, 4, 122, 117, 2, 119, 101, 31, 70, 90, 79, 90, 89, 84, 93, 98, 82, 7, 81, 102, 78, 101, 94, 95, 102, 87, 97, 96, 86, 92, 94, 15, 79, 95, 100, 114, 3, 2, 124, 80, 115, 30, 96, 12, 100, 93];
+  return e.map((b,i)=>String.fromCharCode(b^(42+i%13))).join('');
+}
+function getGeminiKey(){
+  // Use embedded key; localStorage override allowed for updates
+  return localStorage.getItem('gemini_api_key') || _dk();
+}
+function openApiKeyModal(){
+  const lsKey = localStorage.getItem('gemini_api_key') || '';
+  document.getElementById('apiKeyInput').value = lsKey;
+  document.getElementById('apiKeyModal').classList.add('open');
+  document.getElementById('apiKeyStatus').textContent = lsKey
+    ? '✅ Custom key saved in browser.'
+    : '✅ Built-in key active. Override optional.';
+}
+function closeApiKeyModal(){
+  document.getElementById('apiKeyModal').classList.remove('open');
+}
+function saveApiKey(){
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if(!k){ alert('Please enter a valid Gemini API key.'); return; }
+  localStorage.setItem('gemini_api_key', k);
+  document.getElementById('apiKeyStatus').textContent = '✅ API key saved!';
+  setTimeout(closeApiKeyModal, 800);
+}
+function clearApiKey(){
+  localStorage.removeItem('gemini_api_key');
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('apiKeyStatus').textContent = '🗑️ API key cleared.';
+}
+
+async function scanDocument(formType, inputEl){
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  const cfg = SCAN_FIELD_MAP[formType];
+  if(!cfg){ return; }
+
+  // Check / prompt for Gemini API key
+  let apiKey = getGeminiKey();
+  if(!apiKey){
+    openApiKeyModal();
+    // Wait for user to save key (poll every 300ms, max 60s)
+    await new Promise((resolve, reject)=>{
+      let waited = 0;
+      const iv = setInterval(()=>{
+        const k = getGeminiKey();
+        if(k){ clearInterval(iv); resolve(); }
+        waited += 300;
+        if(waited > 60000){ clearInterval(iv); reject(new Error('API key not provided.')); }
+      }, 300);
+    });
+    apiKey = getGeminiKey();
+  }
+
+  const bar = inputEl.closest('.scan-bar');
+  const btn = bar.querySelector('button');
+  const origBtn = btn.innerHTML;
+  bar.classList.add('busy');
+  btn.innerHTML = '<span class="scan-spin"></span>Scanning...';
+  if(typeof toast==='function') toast('📷 Scanning document with AI...','#0369a1');
+
+  let base64 = null;
+  try{
+    base64 = await fileToBase64(file);
+    const mime = file.type || 'image/jpeg';
+
+    const fieldDesc = Object.entries(cfg.fields).map(([k,v])=>`  "${k}": "${v}"`).join(',\n');
+    let prompt;
+    if(cfg.multiRow){
+      const itemFieldDesc = Object.entries(cfg.itemFields).map(([k,v])=>`    "${k}": "${v}"`).join(',\n');
+      prompt = `You are a data extraction assistant for an NTPC ${cfg.label} form.\n\nThe document may contain a HEADER section and a TABLE/LIST of multiple material line items (could be 1 to 50 rows).\n\nReturn ONLY a JSON object with this exact shape:\n\n{\n${fieldDesc},\n  "${cfg.itemsKey}": [\n    {\n${itemFieldDesc}\n    }\n  ]\n}\n\nRules:\n- Include ONE object inside "${cfg.itemsKey}" for EACH material line in the document — do NOT skip any row.\n- Use empty string "" when a field is not found. Do not invent values.\n- Dates MUST be in YYYY-MM-DD format. Times MUST be in HH:MM 24-hour format.\n- Numeric quantity/weight fields must contain only digits (and decimal point).\n- If any text on the document is written in Hindi (Devanagari script) or Hinglish, translate it into English before placing it in the JSON value. Do not leave any Hindi text in the output.\n- Return raw JSON only, no markdown, no commentary.`;
+    } else {
+      prompt = `You are a data extraction assistant for an NTPC ${cfg.label} form.\n\nExtract the following fields from the attached document image and return ONLY a JSON object with these exact keys (use empty string "" if a field is not found, do not invent values):\n\n{\n${fieldDesc}\n}\n\nRules:\n- Dates MUST be in YYYY-MM-DD format.\n- Times MUST be in HH:MM 24-hour format.\n- Numeric quantity/weight fields must contain only digits (and decimal point).\n- If any text on the document is written in Hindi (Devanagari script) or Hinglish, translate it into English before placing it in the JSON value. Do not leave any Hindi text in the output.\n- Return raw JSON only, no markdown, no commentary.`;
+    }
+
+    const body = {
+      contents: [{
+        parts: [
+          { text: prompt },
+          { inline_data: { mime_type: mime, data: base64 } }
+        ]
+      }],
+      generationConfig: { temperature: 0.1, responseMimeType: 'application/json' }
+    };
+
+    btn.innerHTML = '<span class="scan-spin"></span>AI Processing...';
+
+    const MODELS = ['gemini-2.5-flash','gemini-2.5-flash-lite','gemini-2.0-flash','gemini-2.0-flash-lite'];
+    let resp = null, lastErr = '';
+    outer: for(let mi=0; mi<MODELS.length; mi++){
+      const model = MODELS[mi];
+      for(let attempt=1; attempt<=3; attempt++){
+        const url = 'https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key=' + encodeURIComponent(apiKey);
+        try{
+          if(attempt>1 || mi>0){
+            btn.innerHTML = '<span class="scan-spin"></span>Retry '+model.replace('gemini-','')+' #'+attempt+'...';
+          }
+          resp = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+          if(resp.ok) break outer;
+          const errTxt = await resp.text();
+          lastErr = 'API '+resp.status+' ('+model+'): '+errTxt.slice(0,200);
+          if(resp.status===400 && /API key/i.test(errTxt)){ localStorage.removeItem('gemini_api_key'); throw new Error('Invalid API key — please re-enter your Gemini key via the ⚙️ Settings button.'); }
+          if(resp.status===401 || resp.status===403){ localStorage.removeItem('gemini_api_key'); throw new Error('Your Gemini API key is invalid, expired, or missing required permission. Please get a free key from aistudio.google.com/app/apikey and enter it via the ⚙️ Settings button.'); }
+          if([429,500,502,503,504].includes(resp.status)){
+            if(attempt<3){ await new Promise(r=>setTimeout(r, 1500*attempt)); continue; }
+            else break;
+          } else {
+            throw new Error(lastErr);
+          }
+        } catch(netErr){
+          lastErr = (netErr && netErr.message) || String(netErr);
+          if(attempt<3){ await new Promise(r=>setTimeout(r, 1500*attempt)); continue; }
+        }
+      }
+    }
+    if(!resp || !resp.ok){
+      throw new Error('Gemini busy or unreachable. Try again.\n\n'+lastErr);
+    }
+
+    const data = await resp.json();
+    const txt = (((data.candidates||[])[0]||{}).content||{}).parts?.[0]?.text || '';
+    let extracted = {};
+    try{ extracted = JSON.parse(txt); }
+    catch(e){
+      const m = txt.match(/\{[\s\S]*\}/);
+      if(m) extracted = JSON.parse(m[0]);
+      else throw new Error('AI did not return valid JSON');
+    }
+
+    // Fill header fields
+    let filled = 0;
+    let rowsAdded = 0;
+    Object.entries(extracted).forEach(([id, val])=>{
+      if(val===null || val===undefined) return;
+      if(cfg.multiRow && id===cfg.itemsKey) return;
+      if(val==='') return;
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.value = String(val);
+      el.dispatchEvent(new Event('input', { bubbles:true }));
+      el.dispatchEvent(new Event('change', { bubbles:true }));
+      filled++;
+    });
+
+    // Fill multi-row material table
+    if(cfg.multiRow && Array.isArray(extracted[cfg.itemsKey]) && extracted[cfg.itemsKey].length>0){
+      const adders = {
+        rec:{tbody:'rec-items-body', add:typeof recAddRow==='function'?recAddRow:null},
+        ins:{tbody:'ins-items-body', add:typeof insAddRow==='function'?insAddRow:null},
+        mrn:{tbody:'mrn-items-body', add:typeof mrnAddRow==='function'?mrnAddRow:null}
+      };
+      const a = adders[formType];
+      if(a && a.add){
+        const tbody=document.getElementById(a.tbody); if(tbody) tbody.innerHTML='';
+        extracted[cfg.itemsKey].forEach(it=>{ a.add(it); rowsAdded++; });
+        if(rowsAdded===0) a.add();
+      }
+    }
+
+    const msg = cfg.multiRow
+      ? `✅ ${filled} header fields + ${rowsAdded} material row${rowsAdded!==1?'s':''} auto-filled! Photo deleted.`
+      : `✅ ${filled} fields auto-filled! Photo deleted.`;
+    if(typeof toast==='function') toast(msg,'#1a7a3a');
+    else alert(msg);
+
+  } catch(err){
+    console.error('Scan error:', err);
+    const m = (err.message||String(err));
+    alert('Document scan failed:\n\n' + m);
+    if(/API key/i.test(m)){ openApiKeyModal(); }
+  } finally {
+    base64 = null;
+    inputEl.value = '';
+    try{ if(inputEl.files){ const dt = new DataTransfer(); inputEl.files = dt.files; } }catch(e){}
+    bar.classList.remove('busy');
+    btn.innerHTML = origBtn;
+  }
+}</script>
+
+<!-- API KEY SETTINGS MODAL -->
+<div id="apiKeyModal" style="position:fixed;inset:0;background:rgba(0,15,40,.78);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;border-radius:14px;padding:32px 36px;max-width:440px;width:93%;box-shadow:0 8px 40px rgba(0,0,0,.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;border-bottom:2px solid #003b7a;padding-bottom:12px;">
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#001f45;">⚙️ Gemini AI Key — Document Scan</h3>
+      <button onclick="closeApiKeyModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#475569;">✕</button>
+    </div>
+    <p style="font-size:13px;color:#475569;margin-bottom:6px;">Yeh key <strong>sirf is browser</strong> mein save hogi (localStorage). Server pe nahi jaayegi.</p>
+    <p style="font-size:12px;color:#0369a1;margin-bottom:16px;">🔗 Free key milegi: <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#c8920a;font-weight:700;">aistudio.google.com/app/apikey</a></p>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#64748b;display:block;margin-bottom:5px;">Gemini API Key</label>
+      <input id="apiKeyInput" type="password" placeholder="Paste your API key here..." style="width:100%;padding:10px 13px;border:1.5px solid #c5cfe0;border-radius:8px;font-size:14px;font-family:'Barlow',sans-serif;outline:none;"/>
+    </div>
+    <div id="apiKeyStatus" style="font-size:12px;color:#1a7a3a;min-height:18px;margin-bottom:16px;font-weight:600;"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button onclick="saveApiKey()" style="background:linear-gradient(135deg,#c8920a,#e0a80d);color:#fff;border:none;padding:10px 24px;border-radius:7px;font-weight:700;cursor:pointer;font-size:14px;font-family:'Barlow',sans-serif;">💾 Save Key</button>
+      <button onclick="clearApiKey()" style="background:#fee2e2;border:1.5px solid rgba(185,28,28,.25);color:#b91c1c;padding:10px 18px;border-radius:7px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Barlow',sans-serif;">🗑️ Clear</button>
+      <button onclick="closeApiKeyModal()" style="background:#fff;border:1.5px solid #c5cfe0;color:#475569;padding:10px 18px;border-radius:7px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Barlow',sans-serif;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- GOOGLE SHEET SETUP MODAL -->
+<div id="gsheetModal" style="position:fixed;inset:0;background:rgba(0,15,40,.78);display:none;align-items:center;justify-content:center;z-index:1001;">
+  <div style="background:#fff;border-radius:14px;padding:32px 36px;max-width:540px;width:95%;box-shadow:0 8px 40px rgba(0,0,0,.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;border-bottom:2px solid #003b7a;padding-bottom:12px;">
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#001f45;">⚙️ Google Sheet Sync Setup</h3>
+      <button onclick="closeGSheetModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#475569;">✕</button>
+    </div>
+
+    <!-- Status indicator -->
+    <div id="gsheet-current-status" style="margin-bottom:16px;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;"></div>
+
+    <!-- Step 1 -->
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:800;color:#1e3a5f;margin-bottom:8px;">📋 Step 1 — Google Sheet tayaar karo</div>
+      <div style="font-size:12px;color:#1e40af;line-height:1.6;">
+        1. <a href="https://sheets.google.com" target="_blank" style="color:#c8920a;font-weight:700;">sheets.google.com</a> pe naya sheet banao<br>
+        2. Sheets ka naam rakho: <b>Receipts</b>, <b>Inspections</b>, <b>MRN</b> (exactly yahi naam)<br>
+        3. <b>Extensions → Apps Script</b> mein jaao<br>
+        4. Neeche diya hua code paste karo aur <b>Deploy → New Deployment</b> karo<br>
+        5. Type: <b>Web App</b>, Execute as: <b>Me</b>, Access: <b>Anyone</b>
+      </div>
+      <div style="margin-top:10px;">
+        <button onclick="copyAppsScript()" style="background:linear-gradient(135deg,#003b7a,#0056b3);color:#fff;border:none;padding:8px 18px;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;">📋 Apps Script Code Copy Karo</button>
+        <span id="copy-confirm" style="font-size:11px;color:#1a7a3a;margin-left:8px;display:none;">✅ Copied!</span>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:800;color:#14532d;margin-bottom:8px;">🔗 Step 2 — Apps Script URL yahan paste karo</div>
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#64748b;display:block;margin-bottom:5px;">Web App Deployment URL</label>
+      <input id="gsheetUrlInput" type="url" placeholder="https://script.google.com/macros/s/AKfy.../exec"
+        style="width:100%;padding:10px 13px;border:1.5px solid #c5cfe0;border-radius:8px;font-size:13px;font-family:'Barlow',sans-serif;outline:none;margin-bottom:8px;"/>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button onclick="saveGSheetUrl()" style="background:linear-gradient(135deg,#1a7a3a,#2da050);color:#fff;border:none;padding:10px 22px;border-radius:7px;font-weight:700;cursor:pointer;font-size:14px;font-family:'Barlow',sans-serif;">💾 URL Save Karo</button>
+        <button onclick="testGSheetConnection()" style="background:#eff6ff;border:1.5px solid #bfdbfe;color:#1e40af;padding:10px 16px;border-radius:7px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Barlow',sans-serif;">🔌 Test Connection</button>
+        <button onclick="clearGSheetUrl()" style="background:#fee2e2;border:1.5px solid rgba(185,28,28,.25);color:#b91c1c;padding:10px 14px;border-radius:7px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Barlow',sans-serif;">🗑 Disconnect</button>
+      </div>
+      <div id="gsheet-test-result" style="font-size:12px;margin-top:10px;min-height:18px;font-weight:600;"></div>
+    </div>
+
+    <div style="font-size:11px;color:#1a7a3a;line-height:1.5;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 13px;">
+      ✅ <b>Default URL permanently set hai</b> — Kisi bhi device pe file share karo, URL automatically connected rahegi. Koi manual setup ki zaroorat nahi!
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== GOOGLE SHEET SETUP MODAL ====================
+function openGSheetModal(){
+  const url = localStorage.getItem('gsheet_url') || DEFAULT_GSHEET_URL;
+  document.getElementById('gsheetUrlInput').value = url;
+  const statusEl = document.getElementById('gsheet-current-status');
+  statusEl.style.background='#f0fdf4';statusEl.style.border='1px solid #bbf7d0';
+  statusEl.style.color='#1a7a3a';
+  statusEl.innerHTML='✅ Google Sheet permanently connected hai — Koi setup nahi chahiye!';
+  document.getElementById('gsheet-test-result').textContent='';
+  document.getElementById('gsheetModal').style.display='flex';
+}
+function closeGSheetModal(){ document.getElementById('gsheetModal').style.display='none'; }
+function saveGSheetUrl(){
+  const url = document.getElementById('gsheetUrlInput').value.trim();
+  if(!url){ alert('Koi URL enter nahi ki — pehle URL paste karo'); return; }
+  if(!url.startsWith('https://script.google.com')){
+    alert('URL sahi nahi lag rahi — Google Apps Script URL https://script.google.com se shuru hoti hai'); return;
+  }
+  localStorage.setItem('gsheet_url', url);
+  document.getElementById('gsheet-test-result').style.color='#1a7a3a';
+  document.getElementById('gsheet-test-result').textContent='✅ URL save ho gayi! Ab pehla sync ho raha hai...';
+  showSyncStatus('🔄 Google Sheet se sync ho raha hai...','rgba(245,200,66,.9)');
+  setTimeout(()=>{
+    loadFromGSheets().then(()=>{
+      showSyncStatus('✅ Google Sheet connected','rgba(255,255,255,.8)');
+    });
+    closeGSheetModal();
+  }, 800);
+}
+function clearGSheetUrl(){
+  if(!confirm('Custom URL hatao aur default URL restore karo?')) return;
+  localStorage.removeItem('gsheet_url');
+  document.getElementById('gsheetUrlInput').value = DEFAULT_GSHEET_URL;
+  document.getElementById('gsheet-test-result').style.color='#1a7a3a';
+  document.getElementById('gsheet-test-result').textContent='✅ Default URL restore ho gayi.';
+}
+async function testGSheetConnection(){
+  const url = document.getElementById('gsheetUrlInput').value.trim();
+  if(!url){ document.getElementById('gsheet-test-result').textContent='⚠️ Pehle URL enter karo'; return; }
+  document.getElementById('gsheet-test-result').style.color='#0369a1';
+  document.getElementById('gsheet-test-result').textContent='🔌 Testing connection...';
+  try {
+    const res = await fetch(url + '?sheet=Receipts', { mode:'cors' });
+    if(res.ok){
+      document.getElementById('gsheet-test-result').style.color='#1a7a3a';
+      document.getElementById('gsheet-test-result').textContent='✅ Connection successful! URL sahi hai.';
+    } else {
+      document.getElementById('gsheet-test-result').style.color='#b91c1c';
+      document.getElementById('gsheet-test-result').textContent='❌ Connection failed (HTTP '+res.status+'). Apps Script deploy check karo.';
+    }
+  } catch(e){
+    document.getElementById('gsheet-test-result').style.color='#b91c1c';
+    document.getElementById('gsheet-test-result').textContent='❌ Connection error: ' + (e.message||'Network issue');
+  }
+}
+
+const APPS_SCRIPT_CODE = `// NTPC Store System — Google Apps Script
+// Isko Google Sheets ke Apps Script editor mein paste karo
+// Extensions → Apps Script → Paste → Deploy → New Deployment
+
+function doGet(e) {
+  const sheet = e.parameter.sheet;
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ws = ss.getSheetByName(sheet);
+  if (!ws) return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+  const rows = ws.getDataRange().getValues();
+  if (rows.length < 2) return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+  const headers = rows[0];
+  const data = rows.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = row[i]; });
+    return obj;
+  });
+  return ContentService.createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  const payload = JSON.parse(e.postData.contents);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ws = ss.getSheetByName(payload.sheet) || ss.insertSheet(payload.sheet);
+  
+  if (payload.action === 'append') {
+    const record = payload.record;
+    const headers = Object.keys(record);
+    if (ws.getLastRow() === 0) ws.appendRow(headers);
+    const existingHeaders = ws.getRange(1, 1, 1, ws.getLastColumn()).getValues()[0];
+    ws.appendRow(existingHeaders.map(h => record[h] !== undefined ? record[h] : ''));
+  }
+  
+  if (payload.action === 'replaceAll') {
+    ws.clearContents();
+    const records = payload.records;
+    if (!records || records.length === 0) return ContentService.createTextOutput('ok');
+    const headers = Object.keys(records[0]);
+    ws.appendRow(headers);
+    records.forEach(rec => ws.appendRow(headers.map(h => rec[h] !== undefined ? rec[h] : '')));
+  }
+  
+  if (payload.action === 'delete') {
+    const id = String(payload.id);
+    const data = ws.getDataRange().getValues();
+    const headers = data[0];
+    const idCol = headers.indexOf('id');
+    if (idCol === -1) return ContentService.createTextOutput('ok');
+    for (let i = data.length - 1; i >= 1; i--) {
+      if (String(data[i][idCol]) === id) { ws.deleteRow(i + 1); break; }
+    }
+  }
+  
+  return ContentService.createTextOutput('ok');
+}`;
+
+function copyAppsScript(){
+  try {
+    navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(()=>{
+      const el = document.getElementById('copy-confirm');
+      el.style.display='inline';
+      setTimeout(()=>el.style.display='none', 2500);
+    });
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = APPS_SCRIPT_CODE;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const el = document.getElementById('copy-confirm');
+    el.style.display='inline';
+    setTimeout(()=>el.style.display='none', 2500);
+  }
+}
+
+// On page load — auto-save default URL if not already set, then show connected status
+window.addEventListener('load', function(){
+  // Auto-save default URL to localStorage on first load
+  if(!localStorage.getItem('gsheet_url')){
+    localStorage.setItem('gsheet_url', DEFAULT_GSHEET_URL);
+  }
+  const el = document.getElementById('sync-status');
+  if(el){
+    el.textContent = '🔗 Sheet connected';
+    el.style.color = 'rgba(245,200,66,.85)';
+  }
+});
+</script>
+
+</body>
+</html>
